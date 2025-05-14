@@ -1,47 +1,48 @@
 <?php
 include '../controllers/database.php';
-class Store {
+class Store
+{
     private static $instance = null;
     private $db;
     private $conn;
 
-    private function __construct() {
+    private function __construct()
+    {
         // Initialize the database connection
         $this->db = new Database();
         $this->conn = $this->db->connect();
     }
 
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (self::$instance === null) {
             self::$instance = new Store();
         }
         return self::$instance;
     }
 
-    // Optional: expose connection
-    public function getConnection() {
+    public function getConnection()
+    {
         return $this->conn;
     }
 
-    public function insert($table, $data) {
-        // Get keys and values
+    public function insert($table, $data)
+    {
         $columns = implode(", ", array_keys($data));
         $placeholders = ":" . implode(", :", array_keys($data));
 
-        // SQL query
         $sql = "INSERT INTO $table ($columns) VALUES ($placeholders)";
         $stmt = $this->conn->prepare($sql);
 
-        // Bind values
         foreach ($data as $key => $value) {
             $stmt->bindValue(":$key", $value);
         }
 
-        // Execute and return status
         return $stmt->execute();
     }
 
-    public function fetchData($table, $where = null) {
+    public function fetchData($table, $where = null)
+    {
         $sql = "SELECT * FROM $table";
         if ($where) {
             $sql .= " WHERE $where";
@@ -50,5 +51,22 @@ class Store {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-}
 
+    public function find($table, $column, $value)
+    {
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $column)) {
+            throw new Exception("Invalid column name.");
+        }
+
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $table)) {
+            throw new Exception("Invalid table name.");
+        }
+
+        $sql = "SELECT * FROM $table WHERE $column = :value";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':value', $value);
+        $stmt->execute();
+        // return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+}

@@ -1,5 +1,4 @@
 <?php
-// Allow CORS for development
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
@@ -10,7 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once '../functions/store.php';
 
-// ✅ Correct way to get Store instance
 $fetch = Store::getInstance(); 
 
 $data = $fetch->fetchData('dyeingorders', null);
