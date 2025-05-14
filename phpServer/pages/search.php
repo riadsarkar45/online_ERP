@@ -25,7 +25,10 @@ if ($method === 'GET') {
         $data = $store->find('dyeingorders', 'dyeingOrder', $searchValue);
     } elseif ($searchType === 'factoryName') {
         $data = $store->find('dyeingorders', 'factory_name', $searchValue);
-    } else {
+    }elseif($searchType === 'piNo'){
+        $data = $store->find('dyeingorders', 'PI_No', $searchValue);
+    }
+     else {
         echo json_encode([
             "status" => "error",
             "message" => "Invalid search type"
