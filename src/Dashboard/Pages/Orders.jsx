@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Card from "../../Components/Card";
 import axios from "axios";
+import { Link } from "react-router";
 
 const Orders = () => {
     const [data, setData] = useState([]);
@@ -76,6 +77,18 @@ const Orders = () => {
                     </select>
                 </div>
             </div>
+
+            {
+                data?.length < 1 && (
+                    <div className="w-full h-[50vh] flex justify-center items-center">
+                        <div className="grid justify-center">
+                            <h1 className="text-2xl font-bold text-gray-500">No Dyeing Order found</h1>
+
+                            <Link className="bg-green-500 bg-opacity-30 justify-center items-center text-lg text-green-700 w-[3rem] m-auto mt-4 p-3 rounded-lg" to='/dashboard/add-new-dyeing-order'><button>+</button></Link>
+                        </div>
+                    </div>
+                )
+            }
             {data.map((item, index) => (
                 <Card
                     key={index}
