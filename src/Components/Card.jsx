@@ -11,9 +11,11 @@ const Card = (data) => {
 
                 </div>
                 <div>
-                    <h2>Marketing Name: <span className="font-bold">{marketingName}</span></h2>
-                    <h2>Factory Name: <span className="font-bold">{factoryName}</span></h2>
-                    <h2>Merchandiser Name: <span className="font-bold">{merchandiseName}</span></h2>
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                        <h2>Marketing Name: <span className="font-bold">{marketingName}</span></h2>
+                        <h2>Factory Name: <span className="font-bold">{factoryName}</span></h2>
+                        <h2>Merchandiser Name: <span className="font-bold">{merchandiseName}</span></h2>
+                    </div>
                     <h2> Dyeing Order Qty: <span className="font-bold">{dyeingOrder}</span> <span className="font-bold">{dyeingOrderQuantity} LBS</span> </h2>
                     <h2 className="mb-4"> Submission Date: <span className="font-bold">{dyeingOrderDate}</span></h2>
                     <div>
@@ -24,8 +26,8 @@ const Card = (data) => {
                 </div>
             </div>
 
-            
-            
+
+
 
         </div>
     );

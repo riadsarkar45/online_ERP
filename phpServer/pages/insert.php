@@ -5,16 +5,13 @@ header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type");
 header('Content-Type: application/json');
 
-// Handle preflight request (CORS OPTIONS)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
 }
 
-// Include the Store logic (this will load the `Store` class)
 require_once '../functions/store.php';
 
-// Get JSON input
 $input = json_decode(file_get_contents("php://input"), true);
 
 if (!$input || !isset($input['data'])) {
@@ -22,12 +19,22 @@ if (!$input || !isset($input['data'])) {
     exit;
 }
 
-$table = 'dyeingorders';  // Specify your table name
-$data = $input['data'][0];  // Access the first object in the array
-$store = Store::getInstance();  // This gets the instance of the Store class
-$success = $store->insert($table, $data);  // Insert the data into the table
+$table = 'dyeingorders';
+$data = $input['data'][0];  
+$store = Store::getInstance();  
+$success = $store->insert($table, $data);  
 
 if($success) {
+    // inserting data in to yarn_types table for uniq data 
+    $dataToInsert = [
+        "yarn_type" => $data['yarn_type'], //yarn type from data
+        "unit_price" => $data['unit_price'], //unit price from data
+    ];
+    $store->insert('yarn_types', $dataToInsert); // Insert into yarn table
+    //attempting to insert into production table for production data
+    $dataToInsert = [
+        "dyeing_order" => $data['dyeingOrder'], //dyeing order from data
+    ];
     echo json_encode(["status" => "success", "message" => "Data inserted successfully"]);
 } else {
     echo json_encode(["status" => "error", "message" => "Failed to insert data"]);

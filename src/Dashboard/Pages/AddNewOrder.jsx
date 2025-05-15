@@ -13,23 +13,29 @@ const AddNewOrder = () => {
     merchandiser_name: "",
     factory_name: "",
   });
+  const [yarnType, setYarnType] = useState({
+    yarn_type: "",
+    added_by: "Riad Sarkar",
+
+  });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setYarnType({ ...yarnType, [e.target.name]: e.target.value });
   };
-
+  console.log(yarnType, 'line 26');
   const insertNewOrder = () => {
     const data = [formData];
 
     axios.post("http://localhost/southDragon/phpServer/pages/insert.php", {
       data: data,
     })
-    .then((response) => {
-      console.log(response.data);
-    })
-    .catch((error) => {
-      console.error("There was an error!", error);
-    });
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error("There was an error!", error);
+      });
 
     console.log("submitted:", formData);
   };

@@ -5,6 +5,7 @@ import { Link } from "react-router";
 
 const Orders = () => {
     const [data, setData] = useState([]);
+    const [isFiltered, setIsFiltered] = useState(false);
     useEffect(() => {
         axios.get('http://localhost/southDragon/phpServer/pages/get_data.php')
             .then((response) => {
@@ -29,6 +30,7 @@ const Orders = () => {
         })
             .then((res) => {
                 setData(res.data.data);
+                setIsFiltered(true);
                 console.log(res.data.data);
             })
             .catch((error) => {
@@ -38,12 +40,23 @@ const Orders = () => {
         console.log(e, searchType);
     };
 
+    const handleFilterRest = () => {
+        axios.get('http://localhost/southDragon/phpServer/pages/get_data.php')
+            .then((response) => {
+                setData(response.data);
+                setIsFiltered(false);
+            })
+            .catch((error) => {
+                console.error("There was an error!", error);
+            });
+    }
+
     const dyeingOrderStatus = "In Progress";
     const dyeingOrderQuantity = 1000;
-
+    console.log(isFiltered);
     return (
         <div className="w-[95%] m-auto mt-2">
-            <div className="grid grid-cols-3 gap-4 mb-4 bg-white shadow-sm rounded-lg p-4">
+            <div className={`${!isFiltered ? 'grid-cols-3': 'grid-cols-4'} grid gap-4 mb-4 bg-white shadow-sm rounded-lg p-4`}>
 
                 {/* search fields */}
                 <div>
@@ -75,6 +88,9 @@ const Orders = () => {
                             ))
                         }
                     </select>
+                </div>
+                <div>
+                    <button hidden={!isFiltered} onClick={() => handleFilterRest()} className={`${isFiltered ? ' bg-green-500 text-green-700' : 'bg-red-500 cursor-not-allowed text-red-700'} p-2 rounded-lg bg-opacity-40`}>Rest Filters</button>
                 </div>
             </div>
 
