@@ -1,6 +1,6 @@
 
 const Card = (data) => {
-    const { factoryName, dyeingOrder, dyeingOrderDate, dyeingOrderStatus, marketingName, dyeingOrderQuantity, merchandiseName, heading } = data || {};
+    const { factoryName, dyeingOrder, dyeingOrderDate, dyeingOrderStatus, marketingName, dyeingOrderQuantity, merchandiseName, handleUpdate, handleProductionQty } = data || {};
     return (
         <div>
             <div className="bg-white shadow-sm rounded-lg p-4 mb-2">
@@ -18,6 +18,30 @@ const Card = (data) => {
                     </div>
                     <h2> Dyeing Order Qty: <span className="font-bold">{dyeingOrder}</span> <span className="font-bold">{dyeingOrderQuantity} LBS</span> </h2>
                     <h2 className="mb-4"> Submission Date: <span className="font-bold">{dyeingOrderDate}</span></h2>
+                    <div className="flex mb-4">
+                        <input
+                            name="productionQty"
+                            
+                            onChange={(e) => handleProductionQty(e, dyeingOrder)}
+                            className="border rounded-l-md w-[20rem] border-r-0 p-2"
+                            type="text"
+                            placeholder="New Production Qty"
+                        />
+
+                        <select
+                            name="status"
+                            onChange={(e) => handleProductionQty(e, dyeingOrder)}
+                            className="border border-l p-2 w-[10rem]"
+                        >
+                            <option value="" disabled>Select Status</option>
+                            <option value="Production">Delivery Order Qty</option>
+                            <option value="Dyeing Order Qty">Dyeing Order Qty</option>
+                            <option value="Sample Adjust Qty">Sample Adjust Qty</option>
+                            <option value="Total Store Delivery">Total Store Delivery</option>
+                        </select>
+
+                        <button onClick={() => handleUpdate()} className="border border-l-0 rounded-r-md p-2 hover:bg-gray-200">Save Changes</button>
+                    </div>
                     <div>
                         <div className="w-full bg-gray-300 rounded-full h-2">
                             <div className="bg-green-500 h-2 rounded-full" style={{ width: "60%" }}></div>

@@ -6,6 +6,13 @@ import { Link } from "react-router";
 const Orders = () => {
     const [data, setData] = useState([]);
     const [isFiltered, setIsFiltered] = useState(false);
+    const [dataToUpdate, setDataToUpdate] = useState({
+        productionQty: '',
+        status: '',
+        dyeingOrder: '',
+
+    });
+    console.log(dataToUpdate, 'line 14 Orders.jsx');
     useEffect(() => {
         axios.get('http://localhost/southDragon/phpServer/pages/get_data.php')
             .then((response) => {
@@ -51,12 +58,37 @@ const Orders = () => {
             });
     }
 
+    const handleProductionQty = (e, dyeingOrder) => {
+        const { name, value } = e.target;
+
+        setDataToUpdate(prev => ({
+            ...prev,
+            dyeingOrder,
+            [name]: value,
+        }));
+
+       
+
+        console.log("Updated:", dyeingOrder, name, value);
+    };
+
+    const handleUpdate = () => {
+         axios.post('http://localhost/southDragon/phpServer/pages/production_report.php',
+            dataToUpdate,
+            { params: { dyeingOrder: dataToUpdate.dyeingOrder } }
+        )
+        .then((response) => {
+            console.log(response.data);
+        }).catch((error) => {
+            console.error("There was an error!", error);
+        });
+    }
+
     const dyeingOrderStatus = "In Progress";
     const dyeingOrderQuantity = 1000;
-    console.log(isFiltered);
     return (
         <div className="w-[95%] m-auto mt-2">
-            <div className={`${!isFiltered ? 'grid-cols-3': 'grid-cols-4'} grid gap-4 mb-4 bg-white shadow-sm rounded-lg p-4`}>
+            <div className={`${!isFiltered ? 'grid-cols-3' : 'grid-cols-4'} grid gap-4 mb-4 bg-white shadow-sm rounded-lg p-4`}>
 
                 {/* search fields */}
                 <div>
@@ -108,6 +140,9 @@ const Orders = () => {
             {data.map((item, index) => (
                 <Card
                     key={index}
+                    handleProductionQty={handleProductionQty}
+                    handleUpdate={handleUpdate}
+                    dataToUpdate={dataToUpdate}
                     dyeingOrder={item?.dyeingOrder}
                     dyeingOrderDate={item?.created_at}
                     factoryName={item?.factory_name}

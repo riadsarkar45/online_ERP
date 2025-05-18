@@ -41,6 +41,24 @@ class Store
         return $stmt->execute();
     }
 
+    public function update($table, $data, $where)
+    {
+        $set = "";
+        foreach ($data as $key => $value) {
+            $set .= "$key = :$key, ";
+        }
+        $set = rtrim($set, ", ");
+
+        $sql = "UPDATE $table SET $set WHERE $where";
+        $stmt = $this->conn->prepare($sql);
+
+        foreach ($data as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+
+        return $stmt->execute();
+    }
+
     public function fetchData($table, $where = null)
     {
         $sql = "SELECT * FROM $table";
@@ -50,6 +68,23 @@ class Store
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    function checkDataIfExists($table, $column, $value)
+    {
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $column)) {
+            throw new Exception("Invalid column name.");
+        }
+
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $table)) {
+            throw new Exception("Invalid table name.");
+        }
+
+        $sql = "SELECT COUNT(*) FROM $table WHERE $column = :value";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':value', $value);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
     }
 
     public function find($table, $column, $value)

@@ -20,11 +20,11 @@ if (!$input || !isset($input['data'])) {
 }
 
 $table = 'dyeingorders';
-$data = $input['data'][0];  
-$store = Store::getInstance();  
-$success = $store->insert($table, $data);  
+$data = $input['data'][0];
+$store = Store::getInstance();
+$success = $store->insert($table, $data);
 
-if($success) {
+if ($success) {
     // inserting data in to yarn_types table for uniq data 
     $dataToInsert = [
         "yarn_type" => $data['yarn_type'], //yarn type from data
@@ -35,8 +35,8 @@ if($success) {
     $dataToInsert = [
         "dyeing_order" => $data['dyeingOrder'], //dyeing order from data
     ];
+    $store->insert('production_qty', $dataToInsert); // Insert into production table
     echo json_encode(["status" => "success", "message" => "Data inserted successfully"]);
 } else {
     echo json_encode(["status" => "error", "message" => "Failed to insert data"]);
 }
-
