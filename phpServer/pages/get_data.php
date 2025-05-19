@@ -9,12 +9,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once '../functions/store.php';
 
-$fetch = Store::getInstance(); 
+$fetch = Store::getInstance();
 
 $data = $fetch->fetchData('dyeingorders', null);
 
+
 if ($data) {
-    echo json_encode($data);
+
+    $productionStatus = [];
+
+    foreach ($data as $row) {
+
+        $dyeingOrder[] = $row['dyeingOrder'];
+
+        if ($dyeingOrder !== null) {
+
+            $result = $fetch->fetchData('production_qty', "dyeing_order = '" . addslashes($row['dyeingOrder']) . "'");
+
+        } else {
+
+            $result = null;
+
+        }
+
+        $productionStatus[] = $result;
+    }
+
+    echo json_encode(["status" => "success", "orders" => $data, "productionStatus" => $productionStatus]);
 } else {
     echo json_encode(["status" => "error", "message" => "No data found"]);
 }

@@ -1,6 +1,6 @@
 
 const Card = (data) => {
-    const { factoryName, dyeingOrder, dyeingOrderDate, dyeingOrderStatus, marketingName, dyeingOrderQuantity, merchandiseName, handleUpdate, handleProductionQty } = data || {};
+    const { factoryName, dyeingOrder, dyeingOrderDate, dyeingOrderStatus, marketingName, dyeingOrderQuantity, merchandiseName, handleUpdate, handleProductionQty, productionStatus } = data || {};
     return (
         <div>
             <div className="bg-white shadow-sm rounded-lg p-4 mb-2">
@@ -21,7 +21,7 @@ const Card = (data) => {
                     <div className="flex mb-4">
                         <input
                             name="productionQty"
-                            
+
                             onChange={(e) => handleProductionQty(e, dyeingOrder)}
                             className="border rounded-l-md w-[20rem] border-r-0 p-2"
                             type="text"
@@ -42,6 +42,22 @@ const Card = (data) => {
 
                         <button onClick={() => handleUpdate()} className="border border-l-0 rounded-r-md p-2 hover:bg-gray-200">Save Changes</button>
                     </div>
+                    {
+                        productionStatus?.map((innerArray, outerIndex) =>
+                            innerArray.map((item, innerIndex) =>
+                                item?.dyeing_order === dyeingOrder ? (
+                                    <div className="grid grid-cols-3 mb-3" key={`${outerIndex}-${innerIndex}`}>
+                                        <h2>{item.production_qty}</h2>
+                                        <h2>{item.status}</h2>
+                                        <h2>Riad Sarkar</h2>
+                                    </div>
+                                ) : null
+                            )
+                        )
+                    }
+
+
+
                     <div>
                         <div className="w-full bg-gray-300 rounded-full h-2">
                             <div className="bg-green-500 h-2 rounded-full" style={{ width: "60%" }}></div>

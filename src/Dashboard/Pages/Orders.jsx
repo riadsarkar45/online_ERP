@@ -6,6 +6,7 @@ import { Link } from "react-router";
 const Orders = () => {
     const [data, setData] = useState([]);
     const [isFiltered, setIsFiltered] = useState(false);
+    const [productionStatus, setProductionStatus] = useState([]);
     const [dataToUpdate, setDataToUpdate] = useState({
         productionQty: '',
         status: '',
@@ -16,8 +17,9 @@ const Orders = () => {
     useEffect(() => {
         axios.get('http://localhost/southDragon/phpServer/pages/get_data.php')
             .then((response) => {
-                setData(response.data);
-                console.log(response.data);
+                setData(response?.data?.orders);
+                setProductionStatus(response?.data?.productionStatus);
+                console.log(response?.data?.productionStatus);
             })
             .catch((error) => {
                 console.error("There was an error!", error);
@@ -50,7 +52,8 @@ const Orders = () => {
     const handleFilterRest = () => {
         axios.get('http://localhost/southDragon/phpServer/pages/get_data.php')
             .then((response) => {
-                setData(response.data);
+                setData(response?.data?.orders);
+                setProductionStatus(response?.data?.productionStatus);
                 setIsFiltered(false);
             })
             .catch((error) => {
@@ -140,6 +143,7 @@ const Orders = () => {
             {data.map((item, index) => (
                 <Card
                     key={index}
+                    productionStatus={productionStatus}
                     handleProductionQty={handleProductionQty}
                     handleUpdate={handleUpdate}
                     dataToUpdate={dataToUpdate}
