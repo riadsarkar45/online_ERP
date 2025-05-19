@@ -1,10 +1,10 @@
 <?php
 
 class Database {
-    private $host = 'localhost';
-    private $dbname = 'garmentsdata';
-    private $username = 'root';
-    private $password = '';
+    private $host = 'sql212.infinityfree.com';
+    private $dbname = 'if0_39021065_online_erp';
+    private $username = 'if0_39021065';
+    private $password = 'Ys4108HMr8Y3J';
     private $pdo;
 
     public function connect() {
