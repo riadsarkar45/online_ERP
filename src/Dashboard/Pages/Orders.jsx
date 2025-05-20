@@ -15,11 +15,11 @@ const Orders = () => {
     });
     console.log(dataToUpdate, 'line 14 Orders.jsx');
     useEffect(() => {
-        axios.get('https://southdragondyeingandwashing.infinityfreeapp.com/index.php')
+        axios.get('https://southdragon.mygamesonline.org/index.php')
             .then((response) => {
                 setData(response?.data?.orders);
                 setProductionStatus(response?.data?.productionStatus);
-                console.log(response?.data?.productionStatus);
+                console.log(response?.data?.productionStatus, 'from awardspace');
             })
             .catch((error) => {
                 console.error("There was an error!", error);
