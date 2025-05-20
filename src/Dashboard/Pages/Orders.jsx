@@ -15,7 +15,7 @@ const Orders = () => {
     });
     console.log(dataToUpdate, 'line 14 Orders.jsx');
     useEffect(() => {
-        axios.get('http://southdragon.mygamesonline.org/index.php')
+        axios.get('https://southdragon.mygamesonline.org/index.php')
             .then((response) => {
                 setData(response?.data?.orders);
                 setProductionStatus(response?.data?.productionStatus);
