@@ -15,7 +15,7 @@ const Orders = () => {
     });
     console.log(dataToUpdate, 'line 14 Orders.jsx');
     useEffect(() => {
-        axios.get('http://localhost/southDragon/phpServer/pages/get_data.php')
+        axios.get('https://southdragondyeingandwashing.infinityfreeapp.com/index.php')
             .then((response) => {
                 setData(response?.data?.orders);
                 setProductionStatus(response?.data?.productionStatus);
@@ -50,7 +50,7 @@ const Orders = () => {
     };
 
     const handleFilterRest = () => {
-        axios.get('http://localhost/southDragon/phpServer/pages/get_data.php')
+        axios.get('https://southdragondyeingandwashing.infinityfreeapp.com/index.php')
             .then((response) => {
                 setData(response?.data?.orders);
                 setProductionStatus(response?.data?.productionStatus);
