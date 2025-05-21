@@ -70,22 +70,7 @@ class Store
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    function checkDataIfExists($table, $column, $value)
-    {
-        if (!preg_match('/^[a-zA-Z0-9_]+$/', $column)) {
-            throw new Exception("Invalid column name.");
-        }
-
-        if (!preg_match('/^[a-zA-Z0-9_]+$/', $table)) {
-            throw new Exception("Invalid table name.");
-        }
-
-        $sql = "SELECT COUNT(*) FROM $table WHERE $column = :value";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindParam(':value', $value);
-        $stmt->execute();
-        return $stmt->fetchColumn() > 0;
-    }
+    
 
     public function find($table, $column, $value)
     {

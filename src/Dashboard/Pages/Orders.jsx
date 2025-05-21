@@ -16,7 +16,7 @@ const Orders = () => {
     });
     const [isLoading, setIsLoading] = useState(true)
     useEffect(() => {
-        axios.get('https://southdragon.mygamesonline.org/index.php')
+        axios.get('https://southdragondyeingandwashing.infinityfreeapp.com/index.php')
             .then((response) => {
                 setData(response?.data?.orders);
                 setProductionStatus(response?.data?.productionStatus);

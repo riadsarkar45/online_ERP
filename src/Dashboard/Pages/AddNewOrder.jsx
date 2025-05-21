@@ -40,6 +40,8 @@ const AddNewOrder = () => {
     console.log("submitted:", formData);
   };
 
+  
+
   return (
     <div className="mt-5 w-[95%] m-auto">
       <div className="bg-white p-4 border-1 rounded-lg shadow-sm">
