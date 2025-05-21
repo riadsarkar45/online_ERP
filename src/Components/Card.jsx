@@ -34,7 +34,7 @@ const Card = (data) => {
                             className="border border-l p-2 w-[10rem]"
                         >
                             <option value="" disabled>Select Status</option>
-                            <option value="Production">Delivery Order Qty</option>
+                            <option value="Total Production Qty">Total Production Qty</option>
                             <option value="Dyeing Order Qty">Dyeing Order Qty</option>
                             <option value="Sample Adjust Qty">Sample Adjust Qty</option>
                             <option value="Total Store Delivery">Total Store Delivery</option>

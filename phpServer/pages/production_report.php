@@ -33,35 +33,39 @@ if (!$input) {
 
 $data = $fetch->fetchData("production_qty",  "dyeing_order = '$checkDyeingOrder'");
 
-if ($data) {
+if (is_array($data) && count($data) > 0) {
 
     $dataToUpdate1 = [
-
-        "production_qty" => $input['productionQty'], // production qty from input
-
-        "status" => $input['status'], // status from input
+        "production_qty" => $input['productionQty'],
+        "status" => $input['status'],
     ];
 
+    $allRowsSame = true;
 
+    foreach ($data as $row) {
 
-    if ($data[0]['production_qty'] == $input['productionQty'] && $data[0]['status'] == $input['status']) {
+        if ($row['status'] === $input['status'] && $row['production_qty'] === $input['productionQty']) {
 
-        echo json_encode(["status" => "error", "message" => "No changes detected", "dyeingOrder" => $checkDyeingOrder]);
+            $allRowsSame = true;
+        } else {
+            
+            $allRowsSame = false;
+            break;
+        }
 
-        exit;
+        if($row['production_qty'] >= $input['productionQty']) {
+
+            echo json_encode(["status" => "error", "message" => "Production quantity cannot be less than the previous value"]);
+
+            exit;
+        }
+    }
+
+    if ($allRowsSame) {
+
         
-    } else if ($data[0]['production_qty'] !== $input['productionQty'] && $data[0]['status'] !== $input['status']) {
 
-        $dataToUpdate1 = [
-
-            "status" => $input['status'],
-            "production_qty" => $input['productionQty'],
-            "dyeing_order" => $checkDyeingOrder,
-        ];
-
-        $fetch->insert("production_qty", $dataToUpdate1);
-
-        echo json_encode(["status" => "success", "message" => "Update Successful"]);
+        echo json_encode(["status" => "error", "message" => "No changes detected but data updated"]);
 
         exit;
     }
@@ -71,13 +75,15 @@ if ($data) {
     if ($update) {
 
         echo json_encode(["status" => "success", "message" => $input]);
+
     } else {
 
         echo json_encode(["status" => "error", "message" => "Failed to update data", "dyeingOrder" => $checkDyeingOrder]);
+
     }
 } else {
-    $dataToUpdate1 = [
 
+    $dataToUpdate1 = [
         "status" => $input['status'],
         "production_qty" => $input['productionQty'],
         "dyeing_order" => $checkDyeingOrder,
@@ -85,5 +91,5 @@ if ($data) {
 
     $fetch->insert("production_qty", $dataToUpdate1);
 
-    echo json_encode(["status" => "error", "message" => "No data found to update. Please don't try again later.", "dyeingOrder" => $checkDyeingOrder]);
+    echo json_encode(["status" => "success", "message" => "Insert Successful"]);
 }

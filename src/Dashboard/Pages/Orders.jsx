@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import Card from "../../Components/Card";
-import axios from "axios";
 import { Link } from "react-router";
-import AlertSidebar from "../../Components/Alert";
+import AxiosSecure from "../Hooks/AxiosSecure";
 
 const Orders = () => {
     const [data, setData] = useState([]);
@@ -15,8 +14,9 @@ const Orders = () => {
 
     });
     const [isLoading, setIsLoading] = useState(true)
+    const useAxiosSecure = AxiosSecure();
     useEffect(() => {
-        axios.get('https://southdragon.mygamesonline.org/index.php')
+        useAxiosSecure.get('/index.php')
             .then((response) => {
                 setData(response?.data?.orders);
                 setProductionStatus(response?.data?.productionStatus);
@@ -25,7 +25,7 @@ const Orders = () => {
             .catch((error) => {
                 console.error("There was an error!", error);
             });
-    }, []);
+    }, [useAxiosSecure]);
 
     const handleSearch = (e, searchType) => {
         setIsLoading(true);
@@ -33,7 +33,7 @@ const Orders = () => {
             return console.log('Please select a value');
         }
 
-        axios.get('https://southdragon.mygamesonline.org/search.php', {
+        useAxiosSecure.get('/search.php', {
             params: {
                 searchType: searchType,
                 searchValue: e
@@ -54,7 +54,7 @@ const Orders = () => {
 
     const handleFilterRest = () => {
         setIsLoading(true);
-        axios.get('https://southdragon.mygamesonline.org/index.php')
+        useAxiosSecure.get('/index.php')
             .then((response) => {
                 setData(response?.data?.orders);
                 setProductionStatus(response?.data?.productionStatus);
@@ -82,7 +82,7 @@ const Orders = () => {
     };
 
     const handleUpdate = () => {
-        axios.post('https://southdragon.mygamesonline.org/production_report.php',
+        useAxiosSecure.post('/production_report.php',
             dataToUpdate,
             { params: { dyeingOrder: dataToUpdate.dyeingOrder } }
         )

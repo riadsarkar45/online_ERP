@@ -31,7 +31,7 @@ if ($data) {
                 "dyeing_order = '" . addslashes($row['dyeingOrder']) . "'"
             );
         } else {
-            $result = null;
+            $result = [];
         }
 
         $productionStatus[] = $result;
