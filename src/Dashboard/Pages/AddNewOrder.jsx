@@ -27,7 +27,7 @@ const AddNewOrder = () => {
   const insertNewOrder = () => {
     const data = [formData];
 
-    axios.post("http://localhost/southDragon/phpServer/pages/insert.php", {
+    axios.post("https://southdragon.mygamesonline.org/insert.php", {
       data: data,
     })
       .then((response) => {
