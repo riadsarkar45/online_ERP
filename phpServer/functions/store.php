@@ -59,7 +59,7 @@ class Store
         return $stmt->execute();
     }
 
-    public function fetchData($table, $where = null)
+    public function fetchData(string $table, $where = null)
     {
         $sql = "SELECT * FROM $table";
         if ($where) {

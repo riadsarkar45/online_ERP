@@ -1,6 +1,15 @@
+import { useState } from "react";
+import Alert from "./Alert";
 
 const Card = (data) => {
-    const { factoryName, dyeingOrder, dyeingOrderDate, dyeingOrderStatus, marketingName, dyeingOrderQuantity, merchandiseName, handleUpdate, handleProductionQty, productionStatus } = data || {};
+    const { alertMessage, showAlert, alertType, dyeingOrders, factoryName, dyeingOrder, dyeingOrderDate, dyeingOrderStatus, marketingName, dyeingOrderQuantity, merchandiseName, handleUpdate, handleProductionQty, productionStatus } = data || {};
+    const [dyeingOrderQty, setDyeingOrderQty] = useState(dyeingOrderQuantity);
+    const [isShowDetail, setIsShowDetail] = useState(false);
+
+    const handleShowDetail = (dyeingOrder, isShow) => {
+        setDyeingOrderQty(dyeingOrder);
+        setIsShowDetail(isShow);
+    }
     return (
         <div>
             <div className="bg-white shadow-sm rounded-lg p-4 mb-2">
@@ -10,6 +19,11 @@ const Card = (data) => {
                     <h2 className="flex justify-end font-semibold bg-yellow-500 bg-opacity-30 text-yellow-700  p-1 rounded-md ">{dyeingOrderStatus}</h2>
 
                 </div>
+                {
+                    dyeingOrder === dyeingOrders ? (
+                        <Alert messageType={alertType} message={alertMessage} showAlert={showAlert} />
+                    ) : null
+                }
                 <div>
                     <div className="grid grid-cols-3 gap-4 mb-4">
                         <h2>Marketing Name: <span className="font-bold">{marketingName}</span></h2>
@@ -40,21 +54,29 @@ const Card = (data) => {
                             <option value="Total Store Delivery">Total Store Delivery</option>
                         </select>
 
-                        <button onClick={() => handleUpdate()} className="border border-l-0 rounded-r-md p-2 hover:bg-gray-200">Save Changes</button>
+                        <button onClick={() => handleUpdate()} className="border border-l-0 p-2 hover:bg-gray-200">Save Changes</button>
+                        {
+                            isShowDetail ? <button onClick={() => setIsShowDetail(false)} className="border border-l-0 rounded-r-md p-2 hover:bg-gray-200">Hide Detail</button>
+                                : <button onClick={() => handleShowDetail(dyeingOrder, true)} className="border border-l-0 rounded-r-md p-2 hover:bg-gray-200">See Detail</button>
+                        }
                     </div>
+                    
                     {
-                        productionStatus?.map((innerArray, outerIndex) =>
-                            innerArray.map((item, innerIndex) =>
-                                item?.dyeing_order === dyeingOrder ? (
-                                    <div className="grid grid-cols-3 mb-3" key={`${outerIndex}-${innerIndex}`}>
-                                        <h2>{item.production_qty}</h2>
-                                        <h2>{item.status}</h2>
-                                        <h2>Riad Sarkar</h2>
-                                    </div>
-                                ) : null
+                        dyeingOrderQty === dyeingOrder && isShowDetail ? (
+                            productionStatus?.map((innerArray, outerIndex) =>
+                                innerArray.map((item, innerIndex) =>
+                                    item?.dyeing_order === dyeingOrder ? (
+                                        <div className="grid grid-cols-3 mb-3" key={`${outerIndex}-${innerIndex}`}>
+                                            <h2>{item.production_qty}</h2>
+                                            <h2>{item.status}</h2>
+                                            <h2>Riad Sarkar</h2>
+                                        </div>
+                                    ) : null
+                                )
                             )
-                        )
+                        ) : null
                     }
+
 
 
 

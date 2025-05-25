@@ -14,7 +14,12 @@ const Orders = () => {
 
     });
     const [isLoading, setIsLoading] = useState(true)
+    const [dyeingOrders, setDyeingOrder] = useState('')
+    const [alertMessage, setAlertMessage] = useState('')
+    const [alertType, setAlertType] = useState('')
+    const [showAlert, setShowAlert] = useState(false)
     const useAxiosSecure = AxiosSecure();
+
     useEffect(() => {
         useAxiosSecure.get('/index.php')
             .then((response) => {
@@ -87,7 +92,14 @@ const Orders = () => {
             { params: { dyeingOrder: dataToUpdate.dyeingOrder } }
         )
             .then((response) => {
-                console.log(response.data);
+                console.log(response?.data?.status);
+                setDyeingOrder(response?.data?.dyeingOrder);
+                setAlertMessage(response?.data?.message );
+                setAlertType(response?.data?.status);
+                setShowAlert(true);
+                setTimeout(() => {
+                    setShowAlert(false);
+                }, 3000);
             }).catch((error) => {
                 console.error("There was an error!", error);
             });
@@ -154,6 +166,10 @@ const Orders = () => {
                         {data.map((item, index) => (
                             <Card
                                 key={index}
+                                dyeingOrders={dyeingOrders}
+                                alertMessage={alertMessage}
+                                alertType={alertType}
+                                showAlert={showAlert}
                                 productionStatus={productionStatus}
                                 handleProductionQty={handleProductionQty}
                                 handleUpdate={handleUpdate}
