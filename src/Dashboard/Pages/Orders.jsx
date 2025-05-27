@@ -6,26 +6,22 @@ import AxiosSecure from "../Hooks/AxiosSecure";
 const Orders = () => {
     const [data, setData] = useState([]);
     const [isFiltered, setIsFiltered] = useState(false);
-    const [productionStatus, setProductionStatus] = useState([]);
     const [dataToUpdate, setDataToUpdate] = useState({
         productionQty: '',
         status: '',
-        dyeingOrder: '',
+        dyeing_order: '',
 
     });
     const [isLoading, setIsLoading] = useState(true)
-    const [dyeingOrders, setDyeingOrder] = useState('')
-    const [alertMessage, setAlertMessage] = useState('')
-    const [alertType, setAlertType] = useState('')
-    const [showAlert, setShowAlert] = useState(false)
+
     const useAxiosSecure = AxiosSecure();
 
     useEffect(() => {
-        useAxiosSecure.get('/index.php')
-            .then((response) => {
-                setData(response?.data?.orders);
-                setProductionStatus(response?.data?.productionStatus);
-                setIsLoading(false)
+        useAxiosSecure.get('/dyeing-orders')
+            .then((res) => {
+                setData(res?.data);
+                // setIsLoading(false)
+                console.log(res.data);
             })
             .catch((error) => {
                 console.error("There was an error!", error);
@@ -62,7 +58,6 @@ const Orders = () => {
         useAxiosSecure.get('/index.php')
             .then((response) => {
                 setData(response?.data?.orders);
-                setProductionStatus(response?.data?.productionStatus);
                 setIsFiltered(false);
                 setIsLoading(false);
 
@@ -86,27 +81,19 @@ const Orders = () => {
         console.log("Updated:", dyeingOrder, name, value);
     };
 
+    console.log("Data to update:", dataToUpdate);
+
     const handleUpdate = () => {
-        useAxiosSecure.post('/production_report.php',
-            dataToUpdate,
-            { params: { dyeingOrder: dataToUpdate.dyeingOrder } }
-        )
+        useAxiosSecure.post('/update-production', dataToUpdate)
             .then((response) => {
-                console.log(response?.data?.status);
-                setDyeingOrder(response?.data?.dyeingOrder);
-                setAlertMessage(response?.data?.message );
-                setAlertType(response?.data?.status);
-                setShowAlert(true);
-                setTimeout(() => {
-                    setShowAlert(false);
-                }, 3000);
+                console.log(response);
+
             }).catch((error) => {
                 console.error("There was an error!", error);
             });
     }
 
-    const dyeingOrderStatus = "In Progress";
-    const dyeingOrderQuantity = 1000;
+
     return (
         <div className="w-[95%] m-auto mt-2">
             <div>
@@ -149,40 +136,16 @@ const Orders = () => {
                 </div>
 
                 {
-                    data?.length < 1 && (
-                        <div className="w-full h-[50vh] flex justify-center items-center">
-                            <div className="grid justify-center">
-                                <h1 className="text-2xl font-bold text-gray-500">No Dyeing Order found</h1>
-
-                                <Link className="bg-green-500 bg-opacity-30 justify-center items-center text-lg text-green-700 w-[3rem] m-auto mt-4 p-3 rounded-lg" to='/dashboard/add-new-dyeing-order'><button>+</button></Link>
-                            </div>
-                        </div>
-                    )
-                }
-                {
-                    isLoading ? (
-                        <div className="flex justify-center h-50">Loading</div>
-                    ) : <div>
-                        {data.map((item, index) => (
-                            <Card
-                                key={index}
-                                dyeingOrders={dyeingOrders}
-                                alertMessage={alertMessage}
-                                alertType={alertType}
-                                showAlert={showAlert}
-                                productionStatus={productionStatus}
-                                handleProductionQty={handleProductionQty}
-                                handleUpdate={handleUpdate}
-                                dataToUpdate={dataToUpdate}
-                                dyeingOrder={item?.dyeingOrder}
-                                dyeingOrderDate={item?.created_at}
-                                factoryName={item?.factory_name}
-                                dyeingOrderStatus={dyeingOrderStatus}
-                                marketingName={item?.marketing_name}
-                                dyeingOrderQuantity={dyeingOrderQuantity}
-                                merchandiseName={item?.merchandiser_name}
-                            />
-                        ))}
+                    <div>
+                        {
+                            data.map((item) =>
+                                <Card
+                                    data={item}
+                                    handleProductionQty={handleProductionQty}
+                                    handleUpdate={handleUpdate}
+                                />
+                            )
+                        }
                     </div>
                 }
 

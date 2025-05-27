@@ -43,6 +43,26 @@ $dataToInsert = [
     "dyeing_order" => $checkDyeingOrder
 ];
 
-$fetch->insert("production_qty", $dataToInsert);
+$insert = $fetch->insert("production_qty", $dataToInsert);
+// echo json_encode(["status" => "success", "message" => "Insert Successful", 'dyeingOrder' => $checkDyeingOrder]);
 
-echo json_encode(["status" => "success", "message" => "Insert Successful", 'dyeingOrder' => $checkDyeingOrder]);
+
+$find = $fetch->fetchData("dyeingorders", "dyeingOrder = '$checkDyeingOrder'",);
+if (is_array($find) && count($find) > 0) {
+    if (trim($input['status']) === 'Total Production Qty') {
+        foreach ($find as $row) {
+            $production_qty = $row['production_qty'] ?? 0;
+            $dataToUpdate = [
+                "production_qty" => ["RAW" => "production_qty + {$input['productionQty']}"]
+            ];
+
+            $fetch->update(
+                "dyeingorders",
+                $dataToUpdate,
+                "dyeingOrder = '$checkDyeingOrder'"
+            );
+        }
+    } else {
+        echo json_encode(["status" => "error", "message" => $input['status'], 'dyeingOrder' => $checkDyeingOrder]);
+    }
+}

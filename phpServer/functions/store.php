@@ -44,20 +44,32 @@ class Store
     public function update($table, $data, $where)
     {
         $set = "";
-        foreach ($data as $key => $value) {
-            $set .= "$key = :$key, ";
-        }
-        $set = rtrim($set, ", ");
+        $rawFields = [];
 
+        // Detect raw SQL values by wrapping them in ["RAW" => value]
+        foreach ($data as $key => $value) {
+            if (is_array($value) && isset($value['RAW'])) {
+                $set .= "$key = {$value['RAW']}, ";
+                $rawFields[$key] = true;
+            } else {
+                $set .= "$key = :$key, ";
+            }
+        }
+
+        $set = rtrim($set, ", ");
         $sql = "UPDATE $table SET $set WHERE $where";
         $stmt = $this->conn->prepare($sql);
 
+        // Bind only non-raw values
         foreach ($data as $key => $value) {
-            $stmt->bindValue(":$key", $value);
+            if (!isset($rawFields[$key])) {
+                $stmt->bindValue(":$key", $value);
+            }
         }
 
         return $stmt->execute();
     }
+
 
     public function fetchData(string $table, $where = null)
     {
@@ -70,7 +82,7 @@ class Store
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    
+
 
     public function find($table, $column, $value)
     {

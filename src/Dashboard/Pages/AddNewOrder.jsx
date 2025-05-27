@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Button, TextField } from "@mui/material";
-import axios from "axios";
+import useAxiosSecure from "../Hooks/AxiosSecure";
 
 const AddNewOrder = () => {
   const [formData, setFormData] = useState({
-    dyeingOrder: "",
+    dyeing_order: "",
     sectionName: "",
-    PI_No: "",
+    pi_no: "",
     yarn_type: "",
     unit_price: "",
     marketing_name: "",
@@ -19,17 +19,17 @@ const AddNewOrder = () => {
 
   });
 
+  const axiosSecure = useAxiosSecure();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setYarnType({ ...yarnType, [e.target.name]: e.target.value });
   };
-  console.log(yarnType, 'line 26');
+  console.log(yarnType, 'yarnType');
+  console.log(formData, 'formData');
   const insertNewOrder = () => {
     const data = [formData];
-
-    axios.post("https://southdragon.mygamesonline.org/insert.php", {
-      data: data,
-    })
+    axiosSecure.post("/add_new_dyeing_order", data)
       .then((response) => {
         console.log(response.data);
       })
@@ -40,7 +40,7 @@ const AddNewOrder = () => {
     console.log("submitted:", formData);
   };
 
-  
+
 
   return (
     <div className="mt-5 w-[95%] m-auto">
