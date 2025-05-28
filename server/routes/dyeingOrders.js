@@ -9,8 +9,8 @@ userRouters.get('/dyeing-orders', async (req, res) => {
             lookups: [
                 {
                     from: 'production_report',
-                    localField: 'dyeing_order',     // dynamic per document
-                    foreignField: 'dyeing_order',   // match field in production_report
+                    localField: 'dyeing_order',
+                    foreignField: 'dyeing_order',
                     as: 'production_reports'
                 }
             ]
