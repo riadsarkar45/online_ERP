@@ -9,8 +9,6 @@ const Card = ({ data, handleProductionQty, handleUpdate }) => {
 
     const handleShowDetail = (dyeingOrder, show) => {
         setIsShowDetail(show);
-        // You can add more logic here if needed, like fetching details based on dyeingOrder
-        console.log(`Showing details for ${dyeingOrder}: ${show}`);
     }
 
 

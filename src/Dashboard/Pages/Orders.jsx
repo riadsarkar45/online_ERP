@@ -67,18 +67,17 @@ const Orders = () => {
             });
     }
 
-    const handleProductionQty = (e, dyeingOrder) => {
+    const handleProductionQty = (e, dyeing_order) => {
         const { name, value } = e.target;
 
         setDataToUpdate(prev => ({
             ...prev,
-            dyeingOrder,
+            dyeing_order,
             [name]: value,
         }));
 
 
 
-        console.log("Updated:", dyeingOrder, name, value);
     };
 
     console.log("Data to update:", dataToUpdate);

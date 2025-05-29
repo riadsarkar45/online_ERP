@@ -30,6 +30,10 @@ userRouters.get('/dyeing-orders', async (req, res) => {
 userRouters.post('/update-production', async (req, res) => {
     const checkData = req.body;
     if (!checkData || Object.keys(checkData).length === 0) return res.status(400).send({ error: "No data provided" });
+    const checkIfDyeingStatusAreSame = await classUserServices.findDataIfExist('production_report', { status: checkData.status, productionQty: checkData.productionQty })
+    console.log(checkData)
+    if (checkIfDyeingStatusAreSame && Object.keys(checkIfDyeingStatusAreSame).length > 0) return res.send({ error: "Match found. Please make changes first." });
+
     const dataToInsert = await classUserServices.insertToTheDatabase(checkData, 'production_report');
     if (dataToInsert) {
         res.send({ message: "Data inserted successfully", data: dataToInsert });
@@ -39,23 +43,44 @@ userRouters.post('/update-production', async (req, res) => {
 })
 
 userRouters.post('/add_new_dyeing_order', async (req, res) => {
+    console.log(req.body)
 
     if (!req.body || Object.keys(req.body).length === 0 || !Array.isArray(req.body)) return res.status(400).send({ error: "No data provided" });
 
     const dyeingOrders = [];
+    const duplicates = [];
 
     for (const element of req.body) {
+        const exists = await classUserServices.findDataIfExist('dyeing_orders', {
+            dyeing_order: element.dyeing_order
+        });
 
-        const insertNewDyeingOrder = await classUserServices.insertToTheDatabase(element, 'dyeing_orders');
-
-        if (!insertNewDyeingOrder) {
-            return res.status(500).send({ error: "Something went wrong, don't try again later" });
+        if (exists) {
+            duplicates.push(element.dyeing_order); // or store full element if needed
+            continue; // Skip inserting duplicates
         }
 
-        dyeingOrders.push(insertNewDyeingOrder);
+        const inserted = await classUserServices.insertToTheDatabase(element, 'dyeing_orders');
+
+        if (!inserted) {
+            return res.status(500).send({ error: "Something went wrong, please try again later" });
+        }
+
+        dyeingOrders.push(inserted);
     }
 
-    res.send({ message: "All dyeing orders added successfully", data: dyeingOrders });
+    if (duplicates.length > 0) {
+        return res.status(409).send({
+            error: "Some dyeing orders already exist",
+            duplicates
+        });
+    }
+
+    res.send({
+        message: "All dyeing orders added successfully",
+        data: dyeingOrders
+    });
+
 
 })
 

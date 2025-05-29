@@ -50,6 +50,14 @@ class User_Services {
     }
   }
 
+  async findDataIfExist(collectionName, toCheck) {
+    if (!collectionName || !toCheck) throw new Error('Collection name and to-check data should not be empty');
+    const database = db.getDB();
+    const result = await database.collection(collectionName).findOne(toCheck);
+    return result;
+  }
+
+
 
 
 }
