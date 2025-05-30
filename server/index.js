@@ -4,6 +4,7 @@ const app = express();
 const db = require('./config/Database');
 const userRouters = require('./routes/dyeingOrders');
 const cors = require('cors');
+const summaryRouters = require('./routes/summary');
 app.use(express.json());
 
 app.use(cors({
@@ -11,6 +12,7 @@ app.use(cors({
 }));
 
 app.use('/api/', userRouters)
+app.use('/api/', summaryRouters)
 
 app.get('/', async (req, res) => {
   

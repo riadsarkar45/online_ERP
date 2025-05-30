@@ -17,8 +17,7 @@ const Dashboard = () => {
                         <Link to="/dashboard" className="block hover:text-gray-500">Dashboard</Link>
                         <Link to="/dashboard/add-new-dyeing-order" className="block hover:text-gray-500">Add New Dyeing Order</Link>
                         <Link to="/dashboard/dyeing-order-wise-report" className="block hover:text-gray-500">Dyeing Order Wise Report</Link>
-                        <Link to="/dashboard" className="block hover:text-gray-500">PI Wise Report</Link>
-                        <Link to="/dashboard" className="block hover:text-gray-500">Order Wise Raw Issue</Link>
+                        <Link to="/dashboard/summary" className="block hover:text-gray-500">Bulk Summary</Link>
                     </nav>
                 </div>
             </aside>

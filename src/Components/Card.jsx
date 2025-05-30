@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const Card = ({ data, handleProductionQty, handleUpdate }) => {
 
-    const { factory_name, marketing_name, total_qty, submission_date, dyeing_order, production_reports } = data || {};
+    const { factory_name, marketing_name, submission_date, dyeing_order, productionQty, dyeing_order_qty, production_reports } = data || {};
 
     const [isShowDetail, setIsShowDetail] = useState(false);
 
@@ -27,14 +27,19 @@ const Card = ({ data, handleProductionQty, handleUpdate }) => {
                         <h2>Marketing Name: <span className="font-bold">{marketing_name}</span></h2>
                         <h2>Factory Name: <span className="font-bold">{factory_name}</span></h2>
                         <h2>Merchandiser Name: <span className="font-bold">{'Merchandiser Name will be here'}</span></h2>
+
                     </div>
-                    <h2> Dyeing Order Qty: <span className="font-bold">{'Dyeing Order'}</span> <span className="font-bold">{total_qty} LBS</span> </h2>
+                    <h2> Dyeing Order Qty: <span className="font-bold">{dyeing_order_qty || 'Undefind'} LBS</span> </h2>
                     <h2 className="mb-4"> Submission Date: <span className="font-bold">{submission_date}</span></h2>
+                    <h2 className="mb-4"> Total Production Qty: <span className="font-bold">{productionQty}</span></h2>
+                    <h2 className={`${productionQty > dyeing_order_qty ? 'normal' : 'hidden'} mb-4`}
+                    > Extra: <span className="font-bold"> {productionQty > dyeing_order_qty ? `${dyeing_order_qty - productionQty} Extra Dyed` : productionQty}  </span></h2>
+                    <h2 className="mb-4"> Balance: <span className="font-bold">{dyeing_order_qty - productionQty} </span></h2>
                     <div className="flex mb-4">
                         <input
                             name="productionQty"
 
-                            onChange={(e) => handleProductionQty(e, dyeing_order)}
+                            onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name)}
                             className="border rounded-l-md w-[20rem] border-r-0 p-2"
                             type="text"
                             placeholder="New Production Qty"
@@ -42,7 +47,7 @@ const Card = ({ data, handleProductionQty, handleUpdate }) => {
 
                         <select
                             name="status"
-                            onChange={(e) => handleProductionQty(e, dyeing_order)}
+                            onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name)}
                             className="border border-l p-2 w-[10rem]"
                         >
                             <option value="" disabled>Select Status</option>

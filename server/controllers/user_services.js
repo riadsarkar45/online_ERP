@@ -12,6 +12,18 @@ class User_Services {
     }
   }
 
+  async updateData(filter, updateFields, collectionName) {
+    await db.connect();
+    const dbInstance = db.getDB();
+
+    return dbInstance.collection(collectionName).updateOne(
+      filter,
+      { $inc: updateFields }
+    );
+  }
+
+
+
   async fetchData(collectionName, options = {}) {
     if (!collectionName) throw new Error("Collection name is required");
 

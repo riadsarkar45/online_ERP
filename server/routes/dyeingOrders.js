@@ -31,9 +31,8 @@ userRouters.post('/update-production', async (req, res) => {
     const checkData = req.body;
     if (!checkData || Object.keys(checkData).length === 0) return res.status(400).send({ error: "No data provided" });
     const checkIfDyeingStatusAreSame = await classUserServices.findDataIfExist('production_report', { status: checkData.status, productionQty: checkData.productionQty })
-    console.log(checkData)
     if (checkIfDyeingStatusAreSame && Object.keys(checkIfDyeingStatusAreSame).length > 0) return res.send({ error: "Match found. Please make changes first." });
-
+    if (checkData.status === 'Total Production Qty') await classUserServices.updateData({ dyeing_order: checkData.dyeing_order }, { productionQty: Number(checkData.productionQty) }, 'dyeing_orders');
     const dataToInsert = await classUserServices.insertToTheDatabase(checkData, 'production_report');
     if (dataToInsert) {
         res.send({ message: "Data inserted successfully", data: dataToInsert });
@@ -43,7 +42,6 @@ userRouters.post('/update-production', async (req, res) => {
 })
 
 userRouters.post('/add_new_dyeing_order', async (req, res) => {
-    console.log(req.body)
 
     if (!req.body || Object.keys(req.body).length === 0 || !Array.isArray(req.body)) return res.status(400).send({ error: "No data provided" });
 

@@ -10,6 +10,7 @@ const Orders = () => {
         productionQty: '',
         status: '',
         dyeing_order: '',
+        marketing_name: ''
 
     });
     const [isLoading, setIsLoading] = useState(true)
@@ -67,12 +68,13 @@ const Orders = () => {
             });
     }
 
-    const handleProductionQty = (e, dyeing_order) => {
-        const { name, value } = e.target;
+    const handleProductionQty = (e, dyeing_order, marketing_name) => {
+        const { name, value,} = e.target;
 
         setDataToUpdate(prev => ({
             ...prev,
             dyeing_order,
+            marketing_name,
             [name]: value,
         }));
 

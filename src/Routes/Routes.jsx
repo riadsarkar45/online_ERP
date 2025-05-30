@@ -4,6 +4,7 @@ import Dashboard from '../Dashboard/Dashboard.jsx';
 import AddNewOrder from '../Dashboard/Pages/AddNewOrder.jsx';
 import Orders from '../Dashboard/Pages/Orders.jsx';
 import Production from '../Dashboard/Pages/Production.jsx';
+import Summary from '../Dashboard/Pages/marketingSummary/Summary.jsx';
 const Routes = createBrowserRouter([
     {
         path: "/",
@@ -28,6 +29,10 @@ const Routes = createBrowserRouter([
             {
                 path: "/dashboard/update-production-qty",
                 element: <Production />,
+            },
+            {
+                path: "/dashboard/summary",
+                element: <Summary />,
             }
         ]
     },

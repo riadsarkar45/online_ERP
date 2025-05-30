@@ -12,6 +12,7 @@ const AddNewOrder = () => {
     marketing_name: "",
     merchandiser_name: "",
     factory_name: "",
+    productionQty: 0,
   });
   const [yarnType, setYarnType] = useState({
     yarn_type: "",
@@ -47,10 +48,10 @@ const AddNewOrder = () => {
       <div className="bg-white p-4 border-1 rounded-lg shadow-sm">
         <TextField
           fullWidth
-          name="dyeingOrder"
+          name="dyeing_order"
           label="Dyeing Order"
           variant="outlined"
-          value={formData.dyeingOrder}
+          value={formData.dyeing_order}
           onChange={handleChange}
         />
         <div className="grid grid-cols-2 gap-4 mt-4 mb-4">
