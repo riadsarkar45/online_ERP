@@ -1,10 +1,14 @@
-const db = require('../config/Database');
+const Database = require('../config/database_wrong');
 
 class User_Services {
+  constructor() {
+    this.db = new Database(); // create one instance for the class
+  }
+
   async insertToTheDatabase(data, collectionName) {
     try {
-      await db.connect(); // Ensure DB is connected
-      const result = await db.getDB().collection(collectionName).insertOne(data);
+      await this.db.connect(); // ensure DB connection is ready
+      const result = await this.db.getDB().collection(collectionName).insertOne(data);
       return result;
     } catch (err) {
       console.error("User insert failed:", err.message);
@@ -13,23 +17,26 @@ class User_Services {
   }
 
   async updateData(filter, updateFields, collectionName) {
-    await db.connect();
-    const dbInstance = db.getDB();
+    try {
+      await this.db.connect();
+      const dbInstance = this.db.getDB();
 
-    return dbInstance.collection(collectionName).updateOne(
-      filter,
-      { $inc: updateFields }
-    );
+      return await dbInstance.collection(collectionName).updateOne(
+        filter,
+        { $inc: updateFields }
+      );
+    } catch (err) {
+      console.error("Update failed:", err.message);
+      throw err;
+    }
   }
-
-
 
   async fetchData(collectionName, options = {}) {
     if (!collectionName) throw new Error("Collection name is required");
 
     try {
-      await db.connect();
-      const dbInstance = db.getDB();
+      await this.db.connect();
+      const dbInstance = this.db.getDB();
       const collection = dbInstance.collection(collectionName);
 
       const {
@@ -64,14 +71,17 @@ class User_Services {
 
   async findDataIfExist(collectionName, toCheck) {
     if (!collectionName || !toCheck) throw new Error('Collection name and to-check data should not be empty');
-    const database = db.getDB();
-    const result = await database.collection(collectionName).findOne(toCheck);
-    return result;
+
+    try {
+      await this.db.connect();
+      const database = this.db.getDB();
+      const result = await database.collection(collectionName).findOne(toCheck);
+      return result;
+    } catch (err) {
+      console.error("Find data failed:", err.message);
+      throw err;
+    }
   }
-
-
-
-
 }
 
 module.exports = User_Services;

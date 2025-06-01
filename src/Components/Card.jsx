@@ -23,15 +23,17 @@ const Card = ({ data, handleProductionQty, handleUpdate }) => {
                 </div>
 
                 <div>
-                    <div className="grid grid-cols-3 gap-4 mb-4">
+                    <div className="grid grid-cols-3 justify-between gap-4 mb-4">
                         <h2>Marketing Name: <span className="font-bold">{marketing_name}</span></h2>
                         <h2>Factory Name: <span className="font-bold">{factory_name}</span></h2>
                         <h2>Merchandiser Name: <span className="font-bold">{'Merchandiser Name will be here'}</span></h2>
 
                     </div>
-                    <h2> Dyeing Order Qty: <span className="font-bold">{dyeing_order_qty || 'Undefind'} LBS</span> </h2>
-                    <h2 className="mb-4"> Submission Date: <span className="font-bold">{submission_date}</span></h2>
-                    <h2 className="mb-4"> Total Production Qty: <span className="font-bold">{productionQty}</span></h2>
+                    <div className="grid grid-cols-4">
+                        <h2> Dyeing Order Qty: <span className="font-bold">{dyeing_order_qty || 'Undefind'} LBS</span> </h2>
+                        <h2 className="mb-4"> Submission Date: <span className="font-bold">{submission_date}</span></h2>
+                        <h2 className="mb-4"> Total Production Qty: <span className="font-bold">{productionQty}</span></h2>
+                    </div>
                     <h2 className={`${productionQty > dyeing_order_qty ? 'normal' : 'hidden'} mb-4`}
                     > Extra: <span className="font-bold"> {productionQty > dyeing_order_qty ? `${dyeing_order_qty - productionQty} Extra Dyed` : productionQty}  </span></h2>
                     <h2 className="mb-4"> Balance: <span className="font-bold">{dyeing_order_qty - productionQty} </span></h2>

@@ -1,28 +1,32 @@
-// server.js
 const express = require('express');
 const app = express();
-const db = require('./config/Database');
+
 const userRouters = require('./routes/dyeingOrders');
-const cors = require('cors');
 const summaryRouters = require('./routes/summary');
-app.use(express.json());
+const cors = require('cors');
+const Database = require('./config/database_wrong');
+const db = new Database;
 
 app.use(cors({
-  origin: 'http://localhost:5173' 
+  origin: ['http://localhost:5173', 'https://south-dragon.vercel.app'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
 }));
 
-app.use('/api/', userRouters)
-app.use('/api/', summaryRouters)
+app.use(express.json());
+
+
+
+app.use('/api/', userRouters);
+app.use('/api/', summaryRouters);
 
 app.get('/', async (req, res) => {
-  
-    res.json({ message: 'Pinged MongoDB!',  });
-  
+  res.json({ message: 'Pinged MongoDB!' });
 });
 
 // Start server AFTER database connection
 (async () => {
-  await db.connect(); // <-- Wait for DB connection first
+  await db.connect(); // ✅ Now this works correctly
 
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {

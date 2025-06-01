@@ -14,8 +14,8 @@ const Summary = () => {
     return (
         <div className="bg-white">
             <div className="border p-2">
-                <div className="border-b grid grid-cols-5 mb-3 justify-center text-center p-2">
-                    <h2>Marketing Name</h2>
+                <div className="border-b grid grid-cols-6 mb-3 justify-center text-center p-2">
+                    <h2>#</h2>                    <h2>Marketing Name</h2>
                     <h2>Total Dyeing Order</h2>
                     <h2>Total Adjust Qty</h2>
                     <h2>Total Store Delivery</h2>
@@ -23,7 +23,10 @@ const Summary = () => {
                 </div>
                 {
                     getSummary?.map((summary, index) =>
-                        <div key={index} className="grid grid-cols-5 border-b mb-3 p-2 text-center">
+                        <div key={index} className="grid grid-cols-6 border-b mb-3 p-2 text-center">
+                            <h2>
+                                {index + 1}
+                            </h2>
                             <h2>
                                 {summary.marketing_name}
                             </h2>
