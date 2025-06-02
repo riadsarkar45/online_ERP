@@ -12,14 +12,15 @@ const Summary = () => {
             })
     }, [axiosSecure])
     return (
-        <div className="bg-white">
-            <div className="border p-2">
-                <div className="border-b grid grid-cols-6 mb-3 justify-center text-center p-2">
+        <div className="bg-white shadow-sm rounded-sm border p-2">
+            <h2 className="border-b p-2 text-xl">Bulk Summary</h2>
+            <div className="">
+                <div className="border-b grid grid-cols-6  mb-3 justify-center text-center p-2">
                     <h2>#</h2>                    <h2>Marketing Name</h2>
-                    <h2>Total Dyeing Order</h2>
-                    <h2>Total Adjust Qty</h2>
-                    <h2>Total Store Delivery</h2>
-                    <h2>Total Delivery Balance</h2>
+                    <h2>Dyeing Order</h2>
+                    <h2>Adjust Qty</h2>
+                    <h2>Store Delivery</h2>
+                    <h2>Delivery Balance</h2>
                 </div>
                 {
                     getSummary?.map((summary, index) =>

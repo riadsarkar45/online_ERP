@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const Card = ({ data, handleProductionQty, handleUpdate }) => {
 
-    const { factory_name, marketing_name, submission_date, dyeing_order, productionQty, dyeing_order_qty, production_reports } = data || {};
+    const { factory_name, marketing_name, submission_date, dyeing_order, productionQty, merchandiser_name, dyeing_order_qty, production_reports } = data || {};
 
     const [isShowDetail, setIsShowDetail] = useState(false);
 
@@ -18,22 +18,42 @@ const Card = ({ data, handleProductionQty, handleUpdate }) => {
                 <div className="flex justify-between items-center mb-4">
                     <h2 className=" font-semibold bg-blue-500 bg-opacity-30 text-blue-700 p-1 rounded-md">{dyeing_order}</h2>
 
-                    <h2 className="flex justify-end font-semibold bg-yellow-500 bg-opacity-30 text-yellow-700  p-1 rounded-md ">{'In progress'}</h2>
+                    <h2
+                        className={`flex justify-end font-semibold ${dyeing_order_qty === productionQty
+                            ? 'bg-green-500 text-green-700'
+                            : productionQty > dyeing_order_qty
+                                ? 'bg-red-500 text-red-700'
+                                : 'bg-yellow-500 text-yellow-700'
+                            } bg-opacity-30 p-1 rounded-md`}
+                    >
+                        {dyeing_order_qty === productionQty
+                            ? 'Dyeing Completed'
+                            : productionQty > dyeing_order_qty
+                                ? 'Extra Dyed'
+                                : 'Dyeing Incomplete'}
+                    </h2>
 
                 </div>
 
                 <div>
-                    <div className="grid grid-cols-3 justify-between gap-4 mb-4">
+                    <div className="grid grid-cols-3 border p-2 justify-between gap-4 mb-4">
                         <h2>Marketing Name: <span className="font-bold">{marketing_name}</span></h2>
                         <h2>Factory Name: <span className="font-bold">{factory_name}</span></h2>
-                        <h2>Merchandiser Name: <span className="font-bold">{'Merchandiser Name will be here'}</span></h2>
+                        <h2>Merchandiser Name: <span className="font-bold">{merchandiser_name}</span></h2>
 
                     </div>
-                    <div className="grid grid-cols-4">
-                        <h2> Dyeing Order Qty: <span className="font-bold">{dyeing_order_qty || 'Undefind'} LBS</span> </h2>
-                        <h2 className="mb-4"> Submission Date: <span className="font-bold">{submission_date}</span></h2>
-                        <h2 className="mb-4"> Total Production Qty: <span className="font-bold">{productionQty}</span></h2>
+                    <div className="grid grid-cols-3 gap-4 border-t border-b items-center py-2">
+                        <div className="flex items-center">
+                            <h2>Dyeing Order Qty: <span className="font-bold">{dyeing_order_qty || 'Undefined'} LBS</span></h2>
+                        </div>
+                        <div className="flex items-center">
+                            <h2>Submission Date: <span className="font-bold">{submission_date}</span></h2>
+                        </div>
+                        <div className="flex items-center">
+                            <h2>Total Production Qty: <span className="font-bold">{productionQty}</span></h2>
+                        </div>
                     </div>
+
                     <h2 className={`${productionQty > dyeing_order_qty ? 'normal' : 'hidden'} mb-4`}
                     > Extra: <span className="font-bold"> {productionQty > dyeing_order_qty ? `${dyeing_order_qty - productionQty} Extra Dyed` : productionQty}  </span></h2>
                     <h2 className="mb-4"> Balance: <span className="font-bold">{dyeing_order_qty - productionQty} </span></h2>
@@ -87,11 +107,15 @@ const Card = ({ data, handleProductionQty, handleUpdate }) => {
                     }
 
 
-                    <div>
-                        <div className="w-full bg-gray-300 rounded-full h-2">
-                            <div className="bg-green-500 h-2 rounded-full" style={{ width: "60%" }}></div>
-                        </div>
-                    </div>
+                    {/* <div className="w-full bg-gray-300 rounded-full h-2">
+                        <div
+                            className="bg-green-500 h-2 rounded-full"
+                            style={{
+                                width: `${(dyeing_order_qty / productionQty) * 100}%`
+                            }}
+                        ></div>
+                    </div> */}
+
                 </div>
             </div>
 
