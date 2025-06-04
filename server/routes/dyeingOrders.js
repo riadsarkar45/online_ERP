@@ -32,7 +32,26 @@ userRouters.post('/update-production', async (req, res) => {
     if (!checkData || Object.keys(checkData).length === 0) return res.status(400).send({ error: "No data provided" });
     const checkIfDyeingStatusAreSame = await classUserServices.findDataIfExist('production_report', { status: checkData.status, productionQty: checkData.productionQty })
     if (checkIfDyeingStatusAreSame && Object.keys(checkIfDyeingStatusAreSame).length > 0) return res.send({ error: "Match found. Please make changes first." });
-    if (checkData.status === 'Total Production Qty') await classUserServices.updateData({ dyeing_order: checkData.dyeing_order }, { productionQty: Number(checkData.productionQty) }, 'dyeing_orders');
+
+    if (checkData.status === 'Total Production Qty') {
+        await classUserServices.updateData(
+            { dyeing_order: checkData.dyeing_order },
+            { productionQty: Number(checkData.productionQty) },
+            'dyeing_orders'
+        );
+        const checkMarketingName = await classUserServices.findDataIfExist('summary', {
+            marketing_name: checkData.marketing_name
+        });
+        if (checkMarketingName) {
+            const update = await classUserServices.updateData(
+                { marketing_name: checkData.marketing_name },
+                { total_production_qty: Number(checkData.productionQty) },
+                'summary'
+            );
+
+            if (update) res.send({ success: 'Update successful' })
+        }
+    }
     const dataToInsert = await classUserServices.insertToTheDatabase(checkData, 'production_report');
     if (dataToInsert) {
         res.send({ message: "Data inserted successfully", data: dataToInsert });
@@ -42,43 +61,29 @@ userRouters.post('/update-production', async (req, res) => {
 })
 
 userRouters.post('/add_new_dyeing_order', async (req, res) => {
-
-    if (!req.body || Object.keys(req.body).length === 0 || !Array.isArray(req.body)) return res.status(400).send({ error: "No data provided" });
-
-    const dyeingOrders = [];
-    const duplicates = [];
-
-    for (const element of req.body) {
-        const exists = await classUserServices.findDataIfExist('dyeing_orders', {
-            dyeing_order: element.dyeing_order
-        });
-
-        if (exists) {
-            duplicates.push(element.dyeing_order); // or store full element if needed
-            continue; // Skip inserting duplicates
-        }
-
-        const inserted = await classUserServices.insertToTheDatabase(element, 'dyeing_orders');
-
-        if (!inserted) {
-            return res.status(500).send({ error: "Something went wrong, please try again later" });
-        }
-
-        dyeingOrders.push(inserted);
-    }
-
-    if (duplicates.length > 0) {
-        return res.status(409).send({
-            error: "Some dyeing orders already exist",
-            duplicates
-        });
-    }
-
-    res.send({
-        message: "All dyeing orders added successfully",
-        data: dyeingOrders
+    if (Object.keys(req.body).length < 1 || !req.body) return res.status(400).send({ error: 'No data provided' });
+    const exists = await classUserServices.findDataIfExist('dyeing_orders', {
+        dyeing_order: req.body.dyeing_order
     });
+    if (exists) return res.send({ error: 'Dyeing order already inserted' })
+    const insertOrder = await classUserServices.insertToTheDatabase(req.body, 'dyeing_orders')
 
+    const dyeingOrderFound = await classUserServices.findDataIfExist('summary', {
+        dyeing_order: req.body.dyeing_order
+    });
+    const { marketing_name, month_name, sectionName, total_production_qty, total_sample_adjust_qty, total_store_delivery } = req.body || {};
+    if (dyeingOrderFound) {
+        await classUserServices.updateData(
+            { marketing_name: marketing_name },
+            { total_dyeing_qty: Number(req.body.dyeing_order_qty) },
+            'summary'
+        )
+    } else {
+        await classUserServices.insertToTheDatabase({ marketing_name,  month_name, sectionName, total_production_qty, total_sample_adjust_qty, total_store_delivery }, 'summary');
+    }
+
+    if (!insertOrder) return res.send({ error: 'Failed to insert data.' })
+    res.send({ success: 'Order Inserted' })
 
 })
 

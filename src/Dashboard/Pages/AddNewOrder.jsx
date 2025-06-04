@@ -3,6 +3,8 @@ import { Button, TextField } from "@mui/material";
 import useAxiosSecure from "../Hooks/AxiosSecure";
 
 const AddNewOrder = () => {
+  const axiosSecure = useAxiosSecure();
+
   const [formData, setFormData] = useState({
     dyeing_order: "",
     sectionName: "",
@@ -13,24 +15,28 @@ const AddNewOrder = () => {
     merchandiser_name: "",
     factory_name: "",
     productionQty: 0,
-  });
-  const [yarnType, setYarnType] = useState({
-    yarn_type: "",
-    added_by: "Riad Sarkar",
+    dyeing_order_qty: 0,
+    month_name: new Date('2025-06-02').toLocaleString('default', { month: 'long' }),
+    total_production_qty: 0,
+    total_sample_adjust_qty: 0,
+    total_store_delivery: 0,
 
   });
 
-  const axiosSecure = useAxiosSecure();
+
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setYarnType({ ...yarnType, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
-  console.log(yarnType, 'yarnType');
-  console.log(formData, 'formData');
+
+
+  console.log(formData, 'line 32');
+
   const insertNewOrder = () => {
-    const data = [formData];
-    axiosSecure.post("/add_new_dyeing_order", data)
+    axiosSecure.post("/add_new_dyeing_order", formData)
       .then((response) => {
         console.log(response.data);
       })
@@ -87,6 +93,14 @@ const AddNewOrder = () => {
             label="Unit Price"
             variant="outlined"
             value={formData.unit_price}
+            onChange={handleChange}
+          />
+          <TextField
+            fullWidth
+            name="dyeing_order_qty"
+            label="Dyeing Order Qty Lbs"
+            variant="outlined"
+            value={formData.dyeing_order_qty}
             onChange={handleChange}
           />
         </div>

@@ -69,7 +69,7 @@ const Orders = () => {
     }
 
     const handleProductionQty = (e, dyeing_order, marketing_name) => {
-        const { name, value,} = e.target;
+        const { name, value, } = e.target;
 
         setDataToUpdate(prev => ({
             ...prev,
@@ -137,7 +137,9 @@ const Orders = () => {
                 </div>
 
                 {
-                    <div>
+                    data.length < 1 ? (
+                        <h2>NO data found</h2>
+                    ) : <div>
                         {
                             data.map((item) =>
                                 <Card
