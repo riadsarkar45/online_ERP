@@ -1,13 +1,29 @@
-const Alert = ({ messageType, message, showAlert }) => {
-    console.log(showAlert);
+import { useCursorInactivity } from "../Dashboard/Hooks/CursorDetectore";
+
+const Alert = () => {
+    const { setIsInactive } = useCursorInactivity();
+
+    const handleMovementPopUp = () => {
+        setIsInactive(false); // Hide the popup
+    };
+
     return (
-        <div
-            className={`${messageType === 'success'
-                ? 'bg-green-500 border-green-500 text-green-900'
-                : 'bg-red-500 text-red-900 border-red-600'
-                } ${!showAlert ? 'hidden' : ''} rounded-lg w-full bg-opacity-25 border p-4 mb-4`}
-        >
-            <h2 className="font-thin">{message}</h2>
+        <div style={{
+            position: 'fixed',
+            top: '40%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            background: 'white',
+            padding: '20px 40px',
+            borderRadius: '10px',
+            border: '2px solid #333',
+            boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
+            zIndex: 9999,
+            textAlign: 'center'
+        }}>
+            <h2 className="text-xl font-semibold mb-2">Are you there?</h2>
+            <p className="text-gray-600">You’ve been inactive for a while.</p>
+            <button onClick={() => handleMovementPopUp()}>I am alive</button>
         </div>
     );
 };
