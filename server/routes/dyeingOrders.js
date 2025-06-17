@@ -29,9 +29,18 @@ userRouters.get('/dyeing-orders', async (req, res) => {
 
 userRouters.post('/update-production', async (req, res) => {
     const checkData = req.body;
-    if (!checkData || Object.keys(checkData).length === 0) return res.status(400).send({ error: "No data provided" });
-    const checkIfDyeingStatusAreSame = await classUserServices.findDataIfExist('production_report', { status: checkData.status, productionQty: checkData.productionQty })
-    if (checkIfDyeingStatusAreSame && Object.keys(checkIfDyeingStatusAreSame).length > 0) return res.send({ error: "Match found. Please make changes first." });
+    if (!checkData || Object.keys(checkData).length === 0) {
+        return res.status(400).send({ error: "No data provided" });
+    }
+
+    const checkIfDyeingStatusAreSame = await classUserServices.findDataIfExist('production_report', {
+        status: checkData.status,
+        productionQty: checkData.productionQty
+    });
+
+    if (checkIfDyeingStatusAreSame && Object.keys(checkIfDyeingStatusAreSame).length > 0) {
+        return res.send({ error: "Match found. Please make changes first." });
+    }
 
     if (checkData.status === 'Total Production Qty') {
         await classUserServices.updateData(
@@ -39,9 +48,11 @@ userRouters.post('/update-production', async (req, res) => {
             { productionQty: Number(checkData.productionQty) },
             'dyeing_orders'
         );
+
         const checkMarketingName = await classUserServices.findDataIfExist('summary', {
             marketing_name: checkData.marketing_name
         });
+
         if (checkMarketingName) {
             const update = await classUserServices.updateData(
                 { marketing_name: checkData.marketing_name },
@@ -49,16 +60,21 @@ userRouters.post('/update-production', async (req, res) => {
                 'summary'
             );
 
-            if (update) res.send({ success: 'Update successful' })
+            if (update) {
+                return res.send({ success: 'Update successful' });
+            }
         }
     }
+
     const dataToInsert = await classUserServices.insertToTheDatabase(checkData, 'production_report');
+
     if (dataToInsert) {
-        res.send({ message: "Data inserted successfully", data: dataToInsert });
+        return res.send({ message: "Data inserted successfully", data: dataToInsert });
     } else {
-        res.status(500).send({ error: "Something went wrong don't try again later" });
+        return res.status(500).send({ error: "Something went wrong don't try again later" });
     }
-})
+});
+
 
 userRouters.post('/add_new_dyeing_order', async (req, res) => {
     if (Object.keys(req.body).length < 1 || !req.body) return res.status(400).send({ error: 'No data provided' });

@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Card from "../../Components/Card";
 import AxiosSecure from "../Hooks/AxiosSecure";
-import { useCursorInactivity } from "../Hooks/CursorDetectore";
-import Alert from "../../Components/Alert";
 
 const Orders = () => {
     const [data, setData] = useState([]);
-    const [isFiltered, setIsFiltered] = useState(false);
-    const { isInactive } = useCursorInactivity();
     const [dataToUpdate, setDataToUpdate] = useState({
         productionQty: '',
         status: '',
@@ -29,6 +25,34 @@ const Orders = () => {
 
     // Other handlers (search, update, etc.) ...
 
+    const handleUpdate = () => {
+        useAxiosSecure.post('/update-production', dataToUpdate)
+            .then((response) => {
+                console.log(response);
+
+            }).catch((error) => {
+                console.error("There was an error!", error);
+            });
+    }
+
+     const handleProductionQty = (e, dyeing_order, marketing_name) => {
+        const { name, value, } = e.target;
+
+        setDataToUpdate(prev => ({
+            ...prev,
+            dyeing_order,
+            marketing_name,
+            [name]: value,
+        }));
+
+    };
+
+    if (isLoading) {
+        return <div className="w-[95%] flex justify-center h-[100vh] items-center m-auto mt-2">Loading...</div>;
+    }
+
+    console.log("Data to update:", dataToUpdate);
+
     return (
         <div className="w-[95%] m-auto mt-2">
             {data.length < 1 ? (
@@ -39,16 +63,14 @@ const Orders = () => {
                         <Card
                             key={index}
                             data={item}
-                            handleProductionQty={() => { }}
-                            handleUpdate={() => { }}
+                            handleProductionQty={handleProductionQty}
+                            handleUpdate={handleUpdate}
                         />
                     ))}
                 </div>
             )}
 
-            {isInactive && (
-                <Alert />
-            )}
+            
         </div>
     );
 };

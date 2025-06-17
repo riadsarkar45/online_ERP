@@ -1,45 +1,56 @@
 import { createContext, useContext, useState, useRef, useEffect } from "react";
+import Alert from "../../Components/Alert";
 
 const CursorInactivityContext = createContext();
 export const useCursorInactivity = () => useContext(CursorInactivityContext);
 
-const CursorDetector = ({ children, timeout = 1 * 60 * 1000 }) => {
+const CursorDetector = ({ children }) => {
     const [isInactive, setIsInactive] = useState(false);
-    const timeoutRef = useRef(null);
 
-    const resetTimer = () => {
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
-        timeoutRef.current = setTimeout(() => {
-            setIsInactive(true);
-        }, timeout);
+    const scrollTimeout = useRef(null);
+    const scrollInterval = useRef(null); useEffect(() => {
+        const handleScroll = (event) => {
+            console.log('🔄 Scrolling...', event.deltaY);
+            setIsInactive(false); // Reset inactivity state on scroll
 
-        if (isInactive) {
-            setIsInactive(false); 
-        }
-    };
+            // Clear previous timeout
+            if (scrollTimeout.current) {
+                clearTimeout(scrollTimeout.current);
+            }
 
-    useEffect(() => {
-        const events = ['mousemove', 'keydown', 'click', 'scroll'];
+            // Clear previous interval (only one should run)
+            if (scrollInterval.current) {
+                clearInterval(scrollInterval.current);
+            }
 
-        events.forEach((event) => {
-            window.addEventListener(event, resetTimer);
-        });
+            scrollTimeout.current = setTimeout(() => {
+                console.log('✅ Scroll stopped, starting inactivity check...');
 
-        resetTimer(); 
+                scrollInterval.current = setInterval(() => {
+                    console.log('🕒 Checking inactivity...');
+                    setIsInactive(true);
+                    console.log('🟢 User was inactive. Resetting inactivity.');
+
+                }, 4000);
+            }, 200);
+        };
+
+        window.addEventListener('wheel', handleScroll);
 
         return () => {
-            events.forEach((event) => {
-                window.removeEventListener(event, resetTimer);
-            });
-
-            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+            window.removeEventListener('wheel', handleScroll);
+            clearTimeout(scrollTimeout.current);
+            clearInterval(scrollInterval.current);
         };
-    }, []); 
+    }, [isInactive]);
 
     return (
         <CursorInactivityContext.Provider value={{ isInactive, setIsInactive }}>
             {children}
+            {isInactive && (
+                <Alert />
+            )}
         </CursorInactivityContext.Provider>
     );
 };
