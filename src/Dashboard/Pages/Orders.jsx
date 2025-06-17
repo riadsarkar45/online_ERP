@@ -8,7 +8,7 @@ const Orders = () => {
         productionQty: '',
         status: '',
         dyeing_order: '',
-        marketing_name: ''
+        marketing_name: '',
     });
     const [isLoading, setIsLoading] = useState(true);
     const useAxiosSecure = AxiosSecure();
@@ -23,7 +23,6 @@ const Orders = () => {
             .catch(error => console.error("Error fetching orders:", error));
     }, [useAxiosSecure]);
 
-    // Other handlers (search, update, etc.) ...
 
     const handleUpdate = () => {
         useAxiosSecure.post('/update-production', dataToUpdate)

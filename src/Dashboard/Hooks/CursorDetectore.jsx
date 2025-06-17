@@ -9,41 +9,43 @@ const CursorDetector = ({ children }) => {
 
 
     const scrollTimeout = useRef(null);
-    const scrollInterval = useRef(null); useEffect(() => {
-        const handleScroll = (event) => {
-            console.log('🔄 Scrolling...', event.deltaY);
-            setIsInactive(false); // Reset inactivity state on scroll
+    const scrollInterval = useRef(null);
 
-            // Clear previous timeout
+    useEffect(() => {
+        const resetInactivity = () => {
+            console.log('🖱️ Mouse moved or scrolled');
+            setIsInactive(false); // Reset inactivity
+
             if (scrollTimeout.current) {
                 clearTimeout(scrollTimeout.current);
             }
 
-            // Clear previous interval (only one should run)
             if (scrollInterval.current) {
                 clearInterval(scrollInterval.current);
             }
 
             scrollTimeout.current = setTimeout(() => {
-                console.log('✅ Scroll stopped, starting inactivity check...');
+                console.log('✅ User stopped interaction, starting inactivity check...');
 
                 scrollInterval.current = setInterval(() => {
                     console.log('🕒 Checking inactivity...');
                     setIsInactive(true);
                     console.log('🟢 User was inactive. Resetting inactivity.');
-
                 }, 4000);
             }, 200);
         };
 
-        window.addEventListener('wheel', handleScroll);
+        window.addEventListener('wheel', resetInactivity);
+        window.addEventListener('mousemove', resetInactivity); // ← MOUSE POINTER MOVEMENT
 
         return () => {
-            window.removeEventListener('wheel', handleScroll);
+            window.removeEventListener('wheel', resetInactivity);
+            window.removeEventListener('mousemove', resetInactivity);
             clearTimeout(scrollTimeout.current);
             clearInterval(scrollInterval.current);
         };
     }, [isInactive]);
+
 
     return (
         <CursorInactivityContext.Provider value={{ isInactive, setIsInactive }}>

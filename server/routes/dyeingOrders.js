@@ -54,15 +54,30 @@ userRouters.post('/update-production', async (req, res) => {
         });
 
         if (checkMarketingName) {
-            const update = await classUserServices.updateData(
+            await classUserServices.updateData(
                 { marketing_name: checkData.marketing_name },
                 { total_production_qty: Number(checkData.productionQty) },
                 'summary'
             );
 
-            if (update) {
-                return res.send({ success: 'Update successful' });
-            }
+
+        }
+    }
+
+    if (checkData.status === 'Sample Adjust Qty') {
+
+        const checkMarketingName = await classUserServices.findDataIfExist('summary', {
+            marketing_name: checkData.marketing_name
+        });
+
+        if (checkMarketingName) {
+            await classUserServices.updateData(
+                { marketing_name: checkData.marketing_name },
+                { total_sample_adjust_qty: Number(checkData.productionQty) },
+                'summary'
+            );
+
+
         }
     }
 
@@ -95,7 +110,7 @@ userRouters.post('/add_new_dyeing_order', async (req, res) => {
             'summary'
         )
     } else {
-        await classUserServices.insertToTheDatabase({ marketing_name,  month_name, sectionName, total_production_qty, total_sample_adjust_qty, total_store_delivery }, 'summary');
+        await classUserServices.insertToTheDatabase({ marketing_name, month_name, sectionName, total_production_qty, total_sample_adjust_qty, total_store_delivery }, 'summary');
     }
 
     if (!insertOrder) return res.send({ error: 'Failed to insert data.' })
