@@ -13,7 +13,26 @@ const Summary = () => {
     }, [axiosSecure])
     return (
         <div className="bg-white shadow-sm rounded-sm border p-2">
-            <h2 className="border-b p-2 text-xl">Bulk Summary</h2>
+            <div className="flex gap-2 mb-4">
+                <select className="border p-2 rounded-sm outline-none" name="section" id="">
+                    <option value="Section">Section</option>
+                    <option value="Hanks">Hanks</option>
+                    <option value="Cone">Cone</option>
+                    <option value="Pice Dye Acid Wash">Pice Dye Acid Wash</option>
+                </select>
+                <select className="border p-2 rounded-sm outline-none" name="month" id="">
+                    <option value="Section">Month</option>
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                </select>
+                <select className="border p-2 rounded-sm outline-none" name="marketing" id="">
+                    <option value="Section">Marketing</option>
+                    <option value="January">Mr Chunnu</option>
+                    <option value="February">Unknown</option>
+                    <option value="March">Someone</option>
+                </select>
+            </div>
             <div className="">
                 <div className="border-b grid grid-cols-6  mb-3 justify-center text-center p-2">
                     <h2>#</h2>                    <h2>Marketing Name</h2>
@@ -33,7 +52,7 @@ const Summary = () => {
                             </h2>
 
                             <h2>
-                                {summary?.total_dyeing_order_qty}
+                                {summary?.total_dyeing_qty}
                             </h2>
                             <h2>
                                 {summary?.total_sample_adjust_qty}
@@ -42,8 +61,9 @@ const Summary = () => {
                                 {summary?.total_store_delivery}
                             </h2>
                             <h2>
-                                {summary?.total_dyeing_order_qty - summary?.total_store_delivery}
+                                {(Number(summary?.total_dyeing_qty) || 0) - (Number(summary?.total_store_delivery) || 0)}
                             </h2>
+
                         </div>
                     )
                 }

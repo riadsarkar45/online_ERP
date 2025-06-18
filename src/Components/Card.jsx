@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 
-const Card = ({ data, handleProductionQty, handleUpdate }) => {
+const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus, order }) => {
 
     const { factory_name, marketing_name, submission_date, dyeing_order, productionQty, merchandiser_name, dyeing_order_qty, production_reports } = data || {};
 
@@ -62,22 +62,44 @@ const Card = ({ data, handleProductionQty, handleUpdate }) => {
                             name="productionQty"
 
                             onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name)}
-                            className="border rounded-l-md w-[20rem] border-r-0 p-2"
+                            className="border rounded-l-md w-[20rem] outline-none border-r-0 p-2"
                             type="text"
-                            placeholder="New Production Qty"
+                            placeholder={`${getStatus} Qty`}
                         />
 
                         <select
                             name="status"
                             onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name)}
-                            className="border border-l p-2 w-[10rem]"
+                            className="border outline-none border-l p-2 w-[10rem]"
                         >
-                            <option value="" disabled>Select Status</option>
+                            <option defaultValue="Select Status">Select Status</option>
                             <option value="Total Production Qty">Total Production Qty</option>
-                            <option value="Dyeing Order Qty">Dyeing Order Qty</option>
+                            <option value="Total Delivery Order">Total Delivery Order</option>
                             <option value="Sample Adjust Qty">Sample Adjust Qty</option>
                             <option value="Total Store Delivery">Total Store Delivery</option>
                         </select>
+
+                        {
+                            checkStatus === 'Total Store Delivery' && dyeing_order === order ? (
+                                <input
+                                    name="chalan_no"
+
+                                    onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name)}
+                                    className=" w-[10rem] border-1 border border-l-0 p-2 outline-none"
+                                    type="text"
+                                    placeholder='Chalan NO'
+                                />
+                            ) : checkStatus === 'Total Delivery Order' && dyeing_order === order ? (
+                                <input
+                                    name="do_no"
+
+                                    onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name)}
+                                    className=" w-[10rem] border-1 border border-l-0 p-2 outline-none"
+                                    type="text"
+                                    placeholder='DO NO'
+                                />
+                            ) : null
+                        }
 
                         <button
                             onClick={() => handleUpdate()}
@@ -107,14 +129,7 @@ const Card = ({ data, handleProductionQty, handleUpdate }) => {
                     }
 
 
-                    {/* <div className="w-full bg-gray-300 rounded-full h-2">
-                        <div
-                            className="bg-green-500 h-2 rounded-full"
-                            style={{
-                                width: `${(dyeing_order_qty / productionQty) * 100}%`
-                            }}
-                        ></div>
-                    </div> */}
+
 
                 </div>
             </div>

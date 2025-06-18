@@ -4,6 +4,9 @@ import AxiosSecure from "../Hooks/AxiosSecure";
 
 const Orders = () => {
     const [data, setData] = useState([]);
+    const [checkStatus, setCheckStatus] = useState('');
+    const [order, setOrder] = useState('');
+    const [getStatus, setGetStatus] = useState('');
     const [dataToUpdate, setDataToUpdate] = useState({
         productionQty: '',
         status: '',
@@ -23,7 +26,18 @@ const Orders = () => {
                 console.log(res.data);
             })
             .catch(error => console.error("Error fetching orders:", error));
-    }, [useAxiosSecure]);
+        setOrder(dataToUpdate.dyeing_order);
+        if (dataToUpdate.status === '') {
+            setGetStatus('Please Select Status');
+        } else {
+            setGetStatus(dataToUpdate.status);
+        }
+        if (dataToUpdate.status === 'Total Store Delivery' || dataToUpdate.status === 'Total Delivery Order') {
+            setCheckStatus(dataToUpdate.status);
+        } else {
+            setCheckStatus(false);
+        }
+    }, [useAxiosSecure, dataToUpdate]);
 
 
     const handleUpdate = () => {
@@ -38,7 +52,7 @@ const Orders = () => {
 
     const handleProductionQty = (e, dyeing_order, marketing_name) => {
         const { name, value, } = e.target;
-
+        console.log(dataToUpdate.status);
         setDataToUpdate(prev => ({
             ...prev,
             dyeing_order,
@@ -66,6 +80,9 @@ const Orders = () => {
                             data={item}
                             handleProductionQty={handleProductionQty}
                             handleUpdate={handleUpdate}
+                            checkStatus={checkStatus}
+                            getStatus={getStatus}
+                            order={order}
                         />
                     ))}
                 </div>
