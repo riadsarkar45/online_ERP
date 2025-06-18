@@ -20,6 +20,7 @@ const AddNewOrder = () => {
     total_production_qty: 0,
     total_sample_adjust_qty: 0,
     total_store_delivery: 0,
+    currentMonth: `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`,
 
   });
 

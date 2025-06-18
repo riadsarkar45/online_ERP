@@ -9,6 +9,8 @@ const Orders = () => {
         status: '',
         dyeing_order: '',
         marketing_name: '',
+        currentMonth: `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`,
+
     });
     const [isLoading, setIsLoading] = useState(true);
     const useAxiosSecure = AxiosSecure();
@@ -34,7 +36,7 @@ const Orders = () => {
             });
     }
 
-     const handleProductionQty = (e, dyeing_order, marketing_name) => {
+    const handleProductionQty = (e, dyeing_order, marketing_name) => {
         const { name, value, } = e.target;
 
         setDataToUpdate(prev => ({
@@ -69,7 +71,7 @@ const Orders = () => {
                 </div>
             )}
 
-            
+
         </div>
     );
 };

@@ -2,6 +2,7 @@ const express = require('express');
 const userRouters = express.Router();
 const User_Services = require('../controllers/user_services');
 const classUserServices = new User_Services();
+const currentM = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
 
 userRouters.get('/dyeing-orders', async (req, res) => {
     try {
@@ -33,14 +34,6 @@ userRouters.post('/update-production', async (req, res) => {
         return res.status(400).send({ error: "No data provided" });
     }
 
-    const checkIfDyeingStatusAreSame = await classUserServices.findDataIfExist('production_report', {
-        status: checkData.status,
-        productionQty: checkData.productionQty
-    });
-
-    if (checkIfDyeingStatusAreSame && Object.keys(checkIfDyeingStatusAreSame).length > 0) {
-        return res.send({ error: "Match found. Please make changes first." });
-    }
 
     if (checkData.status === 'Total Production Qty') {
         await classUserServices.updateData(
@@ -50,7 +43,8 @@ userRouters.post('/update-production', async (req, res) => {
         );
 
         const checkMarketingName = await classUserServices.findDataIfExist('summary', {
-            marketing_name: checkData.marketing_name
+            marketing_name: checkData.marketing_name,
+            currentMonth: currentM,
         });
 
         if (checkMarketingName) {
@@ -81,6 +75,22 @@ userRouters.post('/update-production', async (req, res) => {
         }
     }
 
+    if (checkData.status === 'Total Store Delivery') {
+        const checkMarketingName = await classUserServices.findDataIfExist('summary', {
+            marketing_name: checkData.marketing_name
+        });
+
+        if (checkMarketingName) {
+            await classUserServices.updateData(
+                { marketing_name: checkData.marketing_name },
+                { total_store_delivery: Number(checkData.productionQty) },
+                'summary'
+            );
+
+
+        }
+    }
+
     const dataToInsert = await classUserServices.insertToTheDatabase(checkData, 'production_report');
 
     if (dataToInsert) {
@@ -100,9 +110,10 @@ userRouters.post('/add_new_dyeing_order', async (req, res) => {
     const insertOrder = await classUserServices.insertToTheDatabase(req.body, 'dyeing_orders')
 
     const dyeingOrderFound = await classUserServices.findDataIfExist('summary', {
-        dyeing_order: req.body.dyeing_order
+        marketing_name: req.body.marketing_name,
+        currentMonth: currentM,
     });
-    const { marketing_name, month_name, sectionName, total_production_qty, total_sample_adjust_qty, total_store_delivery } = req.body || {};
+    const { marketing_name, month_name, sectionName, currentMonth, total_production_qty, total_sample_adjust_qty, total_store_delivery } = req.body || {};
     if (dyeingOrderFound) {
         await classUserServices.updateData(
             { marketing_name: marketing_name },
@@ -110,7 +121,17 @@ userRouters.post('/add_new_dyeing_order', async (req, res) => {
             'summary'
         )
     } else {
-        await classUserServices.insertToTheDatabase({ marketing_name, month_name, sectionName, total_production_qty, total_sample_adjust_qty, total_store_delivery }, 'summary');
+        await classUserServices.insertToTheDatabase(
+            {
+                marketing_name,
+                month_name,
+                sectionName,
+                total_production_qty,
+                total_sample_adjust_qty,
+                total_store_delivery,
+                currentMonth,
+            },
+            'summary');
     }
 
     if (!insertOrder) return res.send({ error: 'Failed to insert data.' })
