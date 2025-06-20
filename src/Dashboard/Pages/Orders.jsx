@@ -12,6 +12,8 @@ const Orders = () => {
         status: '',
         dyeing_order: '',
         marketing_name: '',
+        do_no: '',
+        chalan_no: '',
         currentMonth: `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`,
 
     });
@@ -57,6 +59,7 @@ const Orders = () => {
             ...prev,
             dyeing_order,
             marketing_name,
+            
             [name]: value,
         }));
 
