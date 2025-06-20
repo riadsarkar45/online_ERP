@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Card from "../../Components/Card";
 import AxiosSecure from "../Hooks/AxiosSecure";
+import { useThemeMode } from "../Hooks/Theme";
 
 const Orders = () => {
     const [data, setData] = useState([]);
@@ -19,6 +20,7 @@ const Orders = () => {
     });
     const [isLoading, setIsLoading] = useState(true);
     const useAxiosSecure = AxiosSecure();
+
 
     useEffect(() => {
         useAxiosSecure.get('/dyeing-orders')

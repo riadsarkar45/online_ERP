@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useThemeMode } from "../Dashboard/Hooks/Theme";
 
 
 const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus, order }) => {
@@ -6,6 +7,7 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
     const { factory_name, marketing_name, submission_date, dyeing_order, productionQty, merchandiser_name, dyeing_order_qty, production_reports } = data || {};
 
     const [isShowDetail, setIsShowDetail] = useState(false);
+    const { theme } = useThemeMode();
 
     const handleShowDetail = (dyeingOrder, show) => {
         setIsShowDetail(show);
@@ -14,11 +16,11 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
 
     return (
         <div>
-            <div className="bg-white shadow-sm rounded-lg p-4 mb-2">
+            <div className={`shadow-sm rounded-lg p-4 mb-2 ${theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-white text-black border'}`}>
                 <div className="flex justify-between items-center mb-4">
                     <h2 className=" font-semibold bg-blue-500 bg-opacity-30 text-blue-700 p-1 rounded-md">{dyeing_order}</h2>
 
-                    <h2
+                    {/* <h2
                         className={`flex justify-end font-semibold ${dyeing_order_qty === productionQty
                             ? 'bg-green-500 text-green-700'
                             : productionQty > dyeing_order_qty
@@ -31,7 +33,7 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
                             : productionQty > dyeing_order_qty
                                 ? 'Extra Dyed'
                                 : 'Dyeing Incomplete'}
-                    </h2>
+                    </h2> */}
 
                 </div>
 

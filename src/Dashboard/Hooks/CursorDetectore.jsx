@@ -13,7 +13,6 @@ const CursorDetector = ({ children }) => {
 
     useEffect(() => {
         const resetInactivity = () => {
-            console.log('🖱️ Mouse moved or scrolled');
             setIsInactive(false); // Reset inactivity
 
             if (scrollTimeout.current) {
@@ -25,12 +24,9 @@ const CursorDetector = ({ children }) => {
             }
 
             scrollTimeout.current = setTimeout(() => {
-                console.log('✅ User stopped interaction, starting inactivity check...');
 
                 scrollInterval.current = setInterval(() => {
-                    console.log('🕒 Checking inactivity...');
                     setIsInactive(true);
-                    console.log('🟢 User was inactive. Resetting inactivity.');
                 }, 4000);
             }, 200);
         };
