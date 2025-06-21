@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import useAxiosSecure from "../../Hooks/AxiosSecure";
+import { useThemeMode } from "../../Hooks/Theme";
 
 const Summary = () => {
     const axiosSecure = useAxiosSecure();
+    const { theme } = useThemeMode();
+
     const [getSummary, setSummary] = useState([])
     useEffect(() => {
         axiosSecure.get('/summary')
@@ -12,21 +15,21 @@ const Summary = () => {
             })
     }, [axiosSecure])
     return (
-        <div className="bg-white shadow-sm rounded-sm border p-2">
+        <div className={`${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-white text-black'} bg-white shadow-sm rounded-sm border p-2`}>
             <div className="flex gap-2 mb-4">
-                <select className="border p-2 rounded-sm outline-none" name="section" id="">
+                <select className={`${theme === 'dark' ? 'bg-gray-700 border text-gray-200' : 'bg-white text-black'} border p-2 rounded-md outline-none`} name="section" id="">
                     <option value="Section">Section</option>
                     <option value="Hanks">Hanks</option>
                     <option value="Cone">Cone</option>
                     <option value="Pice Dye Acid Wash">Pice Dye Acid Wash</option>
                 </select>
-                <select className="border p-2 rounded-sm outline-none" name="month" id="">
+                <select className={`${theme === 'dark' ? 'bg-gray-700 border text-gray-200' : 'bg-white text-black'} border p-2 rounded-md outline-none`} name="month" id="">
                     <option value="Section">Month</option>
                     <option value="January">January</option>
                     <option value="February">February</option>
                     <option value="March">March</option>
                 </select>
-                <select className="border p-2 rounded-sm outline-none" name="marketing" id="">
+                <select className={`${theme === 'dark' ? 'bg-gray-700 border text-gray-200' : 'bg-white text-black'} border p-2 rounded-md outline-none`} name="marketing" id="">
                     <option value="Section">Marketing</option>
                     <option value="January">Mr Chunnu</option>
                     <option value="February">Unknown</option>

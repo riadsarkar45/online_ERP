@@ -83,7 +83,7 @@ const Dashboard = () => {
             {/* Main Content */}
             <div className={`h-full pl-64 md:pl-64 flex flex-col `}>
                 {/* Header */}
-                <header className={`${theme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-white text-black'} fixed border-b top-0 left-64 right-0 h-16 bg-white shadow flex items-center justify-between px-4 z-30 md:left-64`}>
+                <header className={`${theme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-white text-black'} fixed border-b top-0 left-64 right-0 h-16 shadow flex items-center justify-between px-4 z-30 md:left-64`}>
                     <button className="md:hidden" onClick={() => setSidebarOpen(true)}>MENU</button>
                     <h1 className="text-xl font-semibold ">Dashboard</h1>
                 </header>

@@ -64,7 +64,7 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
                             name="productionQty"
 
                             onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name)}
-                            className="border rounded-l-md w-[20rem] outline-none border-r-0 p-2"
+                            className={`${theme === 'dark' ? 'bg-gray-700 border text-gray-200' : 'bg-white text-black'} border rounded-l-md w-[20rem] outline-none border-r-0 p-2`}
                             type="text"
                             placeholder={`${getStatus} Qty`}
                         />
@@ -72,7 +72,7 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
                         <select
                             name="status"
                             onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name)}
-                            className="border outline-none border-l p-2 w-[10rem]"
+                            className={`${theme === 'dark' ? 'bg-gray-700 border text-gray-200' : 'bg-white text-black'} border outline-none border-l p-2 w-[10rem]`}
                         >
                             <option defaultValue="Select Status">Select Status</option>
                             <option value="Total Production Qty">Total Production Qty</option>
@@ -87,7 +87,7 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
                                     name="chalan_no"
 
                                     onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name)}
-                                    className=" w-[10rem] border-1 border border-l-0 p-2 outline-none"
+                                    className={`${theme === 'dark' ? 'bg-gray-700 border text-gray-200' : 'bg-white text-black'} w-[10rem] border-1 border border-l-0 p-2 outline-none`}
                                     type="text"
                                     placeholder='Chalan NO'
                                 />
@@ -96,7 +96,7 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
                                     name="do_no"
 
                                     onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name)}
-                                    className=" w-[10rem] border-1 border border-l-0 p-2 outline-none"
+                                    className={`${theme === 'dark' ? 'bg-gray-700 border text-gray-200' : 'bg-white text-black'} w-[10rem] border-1 border border-l-0 p-2 outline-none`}
                                     type="text"
                                     placeholder='DO NO'
                                 />
@@ -105,10 +105,10 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
 
                         <button
                             onClick={() => handleUpdate()}
-                            className="border border-l-0 p-2 hover:bg-gray-200">Save Changes</button>
+                            className={`${theme === 'dark' ? 'hover:bg-gray-400 bg-opacity-10' : 'hover:bg-gray-200'} border border-l-0 p-2 `}>Save Changes</button>
                         {
-                            isShowDetail ? <button onClick={() => setIsShowDetail(false)} className="border border-l-0 rounded-r-md p-2 hover:bg-gray-200">Hide Detail</button>
-                                : <button onClick={() => handleShowDetail(dyeing_order, true)} className="border border-l-0 rounded-r-md p-2 hover:bg-gray-200">See Detail</button>
+                            isShowDetail ? <button onClick={() => setIsShowDetail(false)} className={`${theme === 'dark' ? 'hover:bg-gray-400 bg-opacity-10' : 'hover:bg-gray-200'} border border-l-0 rounded-r-md p-2 hover:bg-gray-200`}>Hide Detail</button>
+                                : <button onClick={() => handleShowDetail(dyeing_order, true)} className={`${theme === 'dark' ? 'hover:bg-gray-400 bg-opacity-10' : 'hover:bg-gray-200'} border border-l-0 rounded-r-md p-2 hover:bg-gray-200`}>See Detail</button>
                         }
                     </div>
 
