@@ -34,6 +34,15 @@ userRouters.post('/update-production', async (req, res) => {
         return res.status(400).send({ error: "No data provided" });
     }
 
+    if (isNaN(checkData.productionQty)) return res.send({ error: "Production quantity must be a number" });
+    const checkMarketingName = await classUserServices.findDataIfExist('summary', {
+        marketing_name: checkData.marketing_name
+    });
+
+
+    const checkDyeingOrder = await classUserServices.findDataIfExist('dyeing_orders', {
+        dyeing_order: checkData.dyeing_order
+    });
 
     if (checkData.status === 'Total Production Qty') {
         await classUserServices.updateData(
@@ -60,16 +69,24 @@ userRouters.post('/update-production', async (req, res) => {
 
     if (checkData.status === 'Sample Adjust Qty') {
 
-        const checkMarketingName = await classUserServices.findDataIfExist('summary', {
-            marketing_name: checkData.marketing_name
-        });
 
-        if (checkMarketingName) {
+
+        if (!checkMarketingName || !checkDyeingOrder || Object.keys(checkMarketingName).length === 0 && Object.keys(checkDyeingOrder).length === 0) return res.send({ error: "No data found for marketing name or dyeing order" });
+
+        if (checkMarketingName && checkDyeingOrder) {
             await classUserServices.updateData(
                 { marketing_name: checkData.marketing_name },
                 { total_sample_adjust_qty: Number(checkData.productionQty) },
                 'summary'
+            )
+            await classUserServices.updateData(
+                { dyeing_order: checkData.dyeing_order },
+                { total_sample_adjust_qty: Number(checkData.productionQty) },
+                'dyeing_orders'
             );
+
+            console.log('head shot');
+
 
 
         }
@@ -80,11 +97,16 @@ userRouters.post('/update-production', async (req, res) => {
             marketing_name: checkData.marketing_name
         });
 
-        if (checkMarketingName) {
+        if (checkMarketingName && checkDyeingOrder) {
             await classUserServices.updateData(
                 { marketing_name: checkData.marketing_name },
                 { total_store_delivery: Number(checkData.productionQty) },
                 'summary'
+            );
+            await classUserServices.updateData(
+                { dyeing_order: checkData.dyeing_order },
+                { total_store_delivery: Number(checkData.productionQty) },
+                'dyeing_orders'
             );
 
 
@@ -113,7 +135,7 @@ userRouters.post('/add_new_dyeing_order', async (req, res) => {
         marketing_name: req.body.marketing_name,
         currentMonth: currentM,
     });
-    const { marketing_name, month_name, sectionName,dyeing_order_qty, currentMonth, total_production_qty, total_sample_adjust_qty, total_store_delivery } = req.body || {};
+    const { marketing_name, month_name, sectionName, dyeing_order_qty, currentMonth, total_sample_adjust_qty, total_store_delivery } = req.body || {};
     if (dyeingOrderFound) {
         await classUserServices.updateData(
             { marketing_name: marketing_name },
@@ -126,7 +148,6 @@ userRouters.post('/add_new_dyeing_order', async (req, res) => {
                 marketing_name,
                 month_name,
                 sectionName,
-                total_production_qty,
                 total_sample_adjust_qty,
                 total_store_delivery,
                 currentMonth,

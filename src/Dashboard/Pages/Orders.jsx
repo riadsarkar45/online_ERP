@@ -9,7 +9,7 @@ const Orders = () => {
     const [order, setOrder] = useState('');
     const [getStatus, setGetStatus] = useState('');
     const [dataToUpdate, setDataToUpdate] = useState({
-        productionQty: '',
+        productionQty: 0,
         status: '',
         dyeing_order: '',
         marketing_name: '',
