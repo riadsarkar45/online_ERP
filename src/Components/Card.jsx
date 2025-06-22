@@ -4,7 +4,7 @@ import { useThemeMode } from "../Dashboard/Hooks/Theme";
 
 const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus, order }) => {
 
-    const { factory_name, marketing_name, submission_date, dyeing_order, productionQty, merchandiser_name, dyeing_order_qty, production_reports } = data || {};
+    const { factory_name, marketing_name,  submission_date, dyeing_order, productionQty, merchandiser_name, dyeing_order_qty, production_reports } = data || {};
 
     const [isShowDetail, setIsShowDetail] = useState(false);
     const { theme } = useThemeMode();
@@ -117,10 +117,14 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
                             production_reports?.length > 0 ? (
                                 production_reports.map((item, index) => (
                                     <div key={index}>
-                                        <div className="grid grid-cols-3 mb-3">
+                                        <div className={`${item?.status === 'Total Store Delivery' || item?.status === 'Total Store Delivery' ? 'grid-cols-3' : 'grid-cols-3'} grid  mb-3`}>
                                             <h2>{item?.productionQty}</h2>
                                             <h2>{item?.status}</h2>
-                                            <h2>{'Riad Sarkar'}</h2>
+                                            {
+                                                item?.status === 'Total Store Delivery' ? (
+                                                    <>Chalan No. {item?.chalan_no}</>
+                                                ): null
+                                            }
                                         </div>
                                     </div>
                                 ))
