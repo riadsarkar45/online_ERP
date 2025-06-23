@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Card from "../../Components/Card";
 import AxiosSecure from "../Hooks/AxiosSecure";
-import { useThemeMode } from "../Hooks/Theme";
-
+import { useQuery } from "@tanstack/react-query";
 const Orders = () => {
     const [data, setData] = useState([]);
     const [checkStatus, setCheckStatus] = useState('');
@@ -20,16 +19,22 @@ const Orders = () => {
     });
     const [isLoading, setIsLoading] = useState(true);
     const useAxiosSecure = AxiosSecure();
-
-
-    useEffect(() => {
-        useAxiosSecure.get('/dyeing-orders')
-            .then(res => {
+    const { refetch } = useQuery({
+        queryKey: ["posts"],
+        queryFn: async () => {
+            try {
+                const res = await useAxiosSecure.get('/dyeing-orders');
                 setData(res.data);
                 setIsLoading(false);
-                console.log(res.data);
-            })
-            .catch(error => console.error("Error fetching orders:", error));
+                return res.data;
+            } catch (error) {
+                console.error("Error fetching posts:", error);
+                return null;
+            }
+        },
+    })
+
+    useEffect(() => {
         setOrder(dataToUpdate.dyeing_order);
         if (dataToUpdate.status === '') {
             setGetStatus('Please Select Status');
@@ -41,14 +46,13 @@ const Orders = () => {
         } else {
             setCheckStatus(false);
         }
-    }, [useAxiosSecure, dataToUpdate]);
+    }, [dataToUpdate]);
 
 
     const handleUpdate = () => {
         useAxiosSecure.post('/update-production', dataToUpdate)
-            .then((response) => {
-                console.log(response);
-
+            .then(() => {
+                refetch();
             }).catch((error) => {
                 console.error("There was an error!", error);
             });
@@ -61,7 +65,7 @@ const Orders = () => {
             ...prev,
             dyeing_order,
             marketing_name,
-            
+
             [name]: value,
         }));
 
