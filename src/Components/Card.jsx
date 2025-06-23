@@ -4,7 +4,7 @@ import { useThemeMode } from "../Dashboard/Hooks/Theme";
 
 const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus, order }) => {
 
-    const { factory_name, marketing_name,  submission_date, dyeing_order, productionQty, merchandiser_name, dyeing_order_qty, production_reports } = data || {};
+    const { factory_name, marketing_name, total_delivery_order, total_store_delivery, submission_date, dyeing_order, productionQty, merchandiser_name, dyeing_order_qty, production_reports } = data || {};
 
     const [isShowDetail, setIsShowDetail] = useState(false);
     const { theme } = useThemeMode();
@@ -58,7 +58,12 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
 
                     <h2 className={`${productionQty > dyeing_order_qty ? 'normal' : 'hidden'} mb-4`}
                     > Extra: <span className="font-bold"> {productionQty > dyeing_order_qty ? `${dyeing_order_qty - productionQty} Extra Dyed` : productionQty}  </span></h2>
-                    <h2 className="mb-4"> Balance: <span className="font-bold">{dyeing_order_qty - productionQty} </span></h2>
+                    <div className="grid grid-cols-4 gap-2 mt-2">
+                        <h2 className="mb-4">Dyeing Balance: <span className="font-bold">{dyeing_order_qty - productionQty} </span></h2>
+                        <h2 className="mb-4"> Delivery Order: <span className="font-bold">{total_delivery_order} </span></h2>
+                        <h2 className="mb-4"> Store Delivery: <span className="font-bold">{total_store_delivery} </span></h2>
+                        <h2 className="mb-4"> Delivery Balance: <span className="font-bold">{(Number(dyeing_order_qty) || 0) - (Number(total_store_delivery) || 0)}</span></h2>
+                    </div>
                     <div className="flex mb-4">
                         <input
                             name="productionQty"
@@ -123,7 +128,9 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
                                             {
                                                 item?.status === 'Total Store Delivery' ? (
                                                     <>Chalan No. {item?.chalan_no}</>
-                                                ): null
+                                                ) : item?.status === 'Total Delivery Order' ? (
+                                                    <>DO No. {item?.do_no}</>
+                                                ) : null
                                             }
                                         </div>
                                     </div>

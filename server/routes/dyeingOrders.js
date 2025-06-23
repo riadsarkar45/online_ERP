@@ -93,7 +93,6 @@ userRouters.post('/update-production', async (req, res) => {
         );
     }
 
-    // Insert report entry
     const dataToInsert = await classUserServices.insertToTheDatabase(checkData, 'production_report');
 
     if (dataToInsert) {

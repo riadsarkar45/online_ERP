@@ -7,11 +7,14 @@ export const useCursorInactivity = () => useContext(CursorInactivityContext);
 const CursorDetector = ({ children }) => {
     const [isInactive, setIsInactive] = useState(false);
 
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
 
     const scrollTimeout = useRef(null);
     const scrollInterval = useRef(null);
 
     useEffect(() => {
+        if (window.innerWidth < 768) setIsSmallScreen(true);
+
         const resetInactivity = () => {
             setIsInactive(false); // Reset inactivity
 
@@ -47,7 +50,17 @@ const CursorDetector = ({ children }) => {
         <CursorInactivityContext.Provider value={{ isInactive, setIsInactive }}>
             {children}
             {isInactive && (
-                <Alert />
+                <Alert
+                    heading={'Are you there?'}
+                    detail={'You have been inactive for a while'}
+                />
+            )}
+
+            {isSmallScreen && (
+                <Alert
+                    heading={'Small Screen Detected'}
+                    detail={'We recommend using a larger screen or display for better experience.'}
+                />
             )}
         </CursorInactivityContext.Provider>
     );
