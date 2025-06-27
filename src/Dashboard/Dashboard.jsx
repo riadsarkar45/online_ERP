@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, Outlet } from "react-router";
 import { useThemeMode } from "./Hooks/Theme";
+import { Toaster } from "react-hot-toast";
 
 const Dashboard = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -91,8 +92,7 @@ const Dashboard = () => {
                 {/* Scrollable Content */}
                 <main className="mt-16 overflow-y-auto p-6 h-full">
                     <Outlet />
-                    {/* Or example content below */}
-
+                    <Toaster />
                 </main>
             </div>
         </div>

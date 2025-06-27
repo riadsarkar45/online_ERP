@@ -122,7 +122,12 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
                             production_reports?.length > 0 ? (
                                 production_reports.map((item, index) => (
                                     <div key={index}>
-                                        <div className={`${item?.status === 'Total Store Delivery' || item?.status === 'Total Store Delivery' ? 'grid-cols-3' : 'grid-cols-3'} grid  mb-3`}>
+                                        <div className={`grid mb-3 ${item?.status === 'Total Store Delivery'
+                                                ? 'grid-cols-3 bg-red-500 p-1 border font-semibold text-red-700 border-red-500 rounded-md bg-opacity-30'
+                                                : item?.status === 'Total Delivery Order'
+                                                    ? 'grid-cols-3 bg-gray-500 border-gray-300 font-semibold border p-1 rounded-md bg-opacity-30'
+                                                    : 'grid-cols-3'
+                                            }`}>
                                             <h2>{item?.productionQty}</h2>
                                             <h2>{item?.status}</h2>
                                             {

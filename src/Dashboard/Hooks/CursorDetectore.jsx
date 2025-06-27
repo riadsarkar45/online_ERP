@@ -30,7 +30,7 @@ const CursorDetector = ({ children }) => {
 
                 scrollInterval.current = setInterval(() => {
                     setIsInactive(true);
-                }, 4000);
+                }, 40000);
             }, 200);
         };
 

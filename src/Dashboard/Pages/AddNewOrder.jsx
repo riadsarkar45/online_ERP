@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useAxiosSecure from "../Hooks/AxiosSecure";
 import { useThemeMode } from "../Hooks/Theme";
+import toast from "react-hot-toast";
 
 const AddNewOrder = () => {
   const axiosSecure = useAxiosSecure();
@@ -9,7 +10,7 @@ const AddNewOrder = () => {
   const [formData, setFormData] = useState({
     dyeing_order: "",
     sectionName: "",
-    pi_no: "",
+    pi_no: 0,
     yarn_type: "",
     unit_price: "",
     marketing_name: "",
@@ -25,8 +26,6 @@ const AddNewOrder = () => {
 
   });
 
-
-
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -34,13 +33,53 @@ const AddNewOrder = () => {
     });
   };
 
+  useEffect(() => {
+    if (!formData.pi_no || formData.pi_no.trim() === '') {
+      setFormData(prev => ({
+        ...prev,
+        yarn_type: '',
+        factory_name: '',
+        marketing_name: '',
+        merchandiser_name: '',
+        unit_price: '',
+        sectionName: '',
+        dyeing_order_qty: 0,
 
-  console.log(formData, 'line 32');
+      }));
+      return;
+    }
+
+    axiosSecure.get(`/get_pi_info/${formData.pi_no}`)
+      .then(res => {
+        console.log(res.data);
+        setFormData(prev => ({
+          ...prev,
+          yarn_type: res.data.yarn_type,
+          factory_name: res.data.factory_name,
+          marketing_name: res.data.marketing_name,
+          merchandiser_name: res.data.merchandiser_name,
+          unit_price: res.data.unit_price,
+          sectionName: res.data.sectionName || '',
+          dyeing_order_qty: res.data.dyeing_order_qty || 0,
+        }));
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }, [formData.pi_no, axiosSecure]);
+
+
+
+
+  console.log(formData.pi_no, 'line 32');
+  console.log(formData);
 
   const insertNewOrder = () => {
     axiosSecure.post("/add_new_dyeing_order", formData)
       .then((response) => {
-        console.log(response.data);
+        if(response.data){
+          toast.success("New Dyeing Order Added Successfully");
+        }
       })
       .catch((error) => {
         console.error("There was an error!", error);
@@ -71,7 +110,7 @@ const AddNewOrder = () => {
             className="p-2 border rounded bg-inherit  outline-none"
           />
           <input
-            name="PI_No"
+            name="pi_no"
             value={formData.PI_No}
             onChange={handleChange}
             placeholder="PI No"
