@@ -149,7 +149,7 @@ userRouters.get('/get_pi_info/:pi_no', async (req, res) => {
     const findData = await classUserServices.findDataIfExist('dyeing_orders', 
         { pi_no: Number(req.params.pi_no) }
     )
-    if(!findData) return res.send({ error: 'No data found for the provided PI number.' });
+    if(!findData) return res.send({ findData: null, error: 'No data found for this PI number.' });
     res.send(findData);
 })
 

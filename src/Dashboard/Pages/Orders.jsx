@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Card from "../../Components/Card";
 import AxiosSecure from "../Hooks/AxiosSecure";
 import { useQuery } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 const Orders = () => {
     const [data, setData] = useState([]);
     const [checkStatus, setCheckStatus] = useState('');
@@ -51,8 +52,11 @@ const Orders = () => {
 
     const handleUpdate = () => {
         useAxiosSecure.post('/update-production', dataToUpdate)
-            .then(() => {
-                refetch();
+            .then((res) => {
+                if(res.data){
+                    refetch();
+                    toast.success("Update Successful")
+                }
             }).catch((error) => {
                 console.error("There was an error!", error);
             });

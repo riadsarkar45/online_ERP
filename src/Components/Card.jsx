@@ -4,7 +4,7 @@ import { useThemeMode } from "../Dashboard/Hooks/Theme";
 
 const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus, order }) => {
 
-    const { factory_name, marketing_name, total_delivery_order, total_store_delivery, submission_date, dyeing_order, productionQty, merchandiser_name, dyeing_order_qty, production_reports } = data || {};
+    const { factory_name, marketing_name, total_delivery_order,yarn_type, total_store_delivery, submission_date, dyeing_order, productionQty, merchandiser_name, dyeing_order_qty, production_reports } = data || {};
 
     const [isShowDetail, setIsShowDetail] = useState(false);
     const { theme } = useThemeMode();
@@ -44,9 +44,12 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
                         <h2>Merchandiser Name: <span className="font-bold">{merchandiser_name}</span></h2>
 
                     </div>
-                    <div className="grid grid-cols-3 gap-4 border-b items-center py-2">
+                    <div className="grid grid-cols-4 gap-4 border-b items-center py-2">
                         <div className="flex items-center">
-                            <h2>Dyeing Order Qty: <span className="font-bold">{dyeing_order_qty || 'Undefined'} LBS</span></h2>
+                            <h2>Order Qty: <span className="font-bold">{dyeing_order_qty || 'Undefined'} LBS</span></h2>
+                        </div>
+                        <div className="flex items-center">
+                            <h2>Yarn: <span className="font-bold">{yarn_type || 'Undefined'}</span></h2>
                         </div>
                         <div className="flex items-center">
                             <h2>Submission Date: <span className="font-bold">{submission_date}</span></h2>

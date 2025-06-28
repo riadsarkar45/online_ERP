@@ -51,7 +51,23 @@ const AddNewOrder = () => {
 
     axiosSecure.get(`/get_pi_info/${formData.pi_no}`)
       .then(res => {
-        console.log(res.data);
+        if (res?.data?.findData === null) {
+          toast.error("Looks like this is completely new PI, please fill the form manually");
+          setFormData(prev => ({
+            ...prev,
+            yarn_type: '',
+            factory_name: '',
+            marketing_name: '',
+            merchandiser_name: '',
+            unit_price: '',
+            sectionName: '',
+            dyeing_order_qty: 0,
+
+          }));
+          return;
+        } else {
+          toast.success("Auto-filled data from PI");
+        }
         setFormData(prev => ({
           ...prev,
           yarn_type: res.data.yarn_type,
@@ -69,15 +85,18 @@ const AddNewOrder = () => {
   }, [formData.pi_no, axiosSecure]);
 
 
-
-
-  console.log(formData.pi_no, 'line 32');
-  console.log(formData);
-
   const insertNewOrder = () => {
+    const hasEmptyField = Object.values(formData).some(
+      value => value === "" || value === null || value === undefined ||
+        (typeof value === "string" && value.trim() === "")
+    );
+    if (hasEmptyField) {
+      toast.error("Please fill all the fields");
+      return;
+    }
     axiosSecure.post("/add_new_dyeing_order", formData)
       .then((response) => {
-        if(response.data){
+        if (response.data) {
           toast.success("New Dyeing Order Added Successfully");
         }
       })
@@ -85,7 +104,6 @@ const AddNewOrder = () => {
         console.error("There was an error!", error);
       });
 
-    console.log("submitted:", formData);
   };
 
 
