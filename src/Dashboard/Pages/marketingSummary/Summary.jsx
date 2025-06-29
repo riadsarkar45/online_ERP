@@ -68,9 +68,8 @@ const Summary = () => {
                 }
             </div>
             <div className="">
-                <div className="border-b grid grid-cols-7  mb-3 justify-center  text-center p-2">
+                <div className="border-b grid grid-cols-6  mb-3 justify-center  text-center p-2">
                     <h2>#</h2>
-                    <h2>PI Qty</h2>
                     <h2>Marketing Name</h2>
                     <h2>Dyeing Order</h2>
                     <h2>Adjust Qty</h2>
@@ -79,12 +78,9 @@ const Summary = () => {
                 </div>
                 {
                     getSummary?.map((summary, index) =>
-                        <div key={index} className="grid grid-cols-7 border-b mb-3 p-2 items-center text-center">
+                        <div key={index} className="grid grid-cols-6 border-b mb-3 p-2 items-center text-center">
                             <h2 className="">
                                 {index + 1}
-                            </h2>
-                            <h2>
-                                50000
                             </h2>
                             <h2>
                                 {summary.marketing_name}

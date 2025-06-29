@@ -9,13 +9,12 @@ const CursorDetector = ({ children }) => {
     const [isInactive, setIsInactive] = useState(false);
 
     const [isSmallScreen, setIsSmallScreen] = useState(false);
-    const socket = useSocket();
     const scrollTimeout = useRef(null);
     const scrollInterval = useRef(null);
 
     useEffect(() => {
-        if (window.innerWidth < 768) setIsSmallScreen(true);
-
+        if (window.innerWidth < 768)  setIsSmallScreen(true);
+        setIsSmallScreen(false);
         const resetInactivity = () => {
             setIsInactive(false); // Reset inactivity
 
@@ -36,11 +35,13 @@ const CursorDetector = ({ children }) => {
         };
 
         window.addEventListener('wheel', resetInactivity);
-        window.addEventListener('mousemove', resetInactivity); // ← MOUSE POINTER MOVEMENT
+        window.addEventListener('mousemove', resetInactivity); 
+        window.addEventListener('click', resetInactivity); 
 
         return () => {
             window.removeEventListener('wheel', resetInactivity);
             window.removeEventListener('mousemove', resetInactivity);
+            window.removeEventListener('click', resetInactivity);
             clearTimeout(scrollTimeout.current);
             clearInterval(scrollInterval.current);
         };
@@ -48,7 +49,7 @@ const CursorDetector = ({ children }) => {
 
 
 
-   
+
 
 
     return (
