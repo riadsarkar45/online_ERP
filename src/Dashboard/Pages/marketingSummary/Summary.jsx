@@ -7,6 +7,7 @@ const Summary = () => {
     const { theme } = useThemeMode();
 
     const [getSummary, setSummary] = useState([])
+    const [isFiltered, setIsFiltered] = useState(false);
     useEffect(() => {
         axiosSecure.get('/summary')
             .then((res) => {
@@ -14,30 +15,60 @@ const Summary = () => {
                 console.log(res.data);
             })
     }, [axiosSecure])
+
+    const handleFilter = (e, type) => {
+        const selectedType = e.target.value;
+
+        if (type === 'marketing_name') {
+            const filteredSummaries = getSummary.filter(marketing => marketing.marketing_name === selectedType);
+            setSummary(filteredSummaries);
+            setIsFiltered(true);
+        } else if (type === 'month') {
+            const filteredSummaries = getSummary.filter(summary => summary.month_name === selectedType);
+            setSummary(filteredSummaries);
+            setIsFiltered(true);
+        }
+
+    };
+
+    const handleResetFilter = () => {
+        axiosSecure.get('/summary')
+            .then((res) => {
+                setSummary(res.data);
+                console.log(res.data);
+            })
+
+        setIsFiltered(false);
+    }
+
     return (
         <div className={`${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-white text-black'}  shadow-sm rounded-sm border p-2`}>
-            <div className="flex gap-2 mb-4">
-                <select className={`${theme === 'dark' ? 'bg-gray-700 border text-gray-200' : 'bg-white text-black'} border p-2 rounded-md outline-none`} name="section" id="">
-                    <option value="Section">Section</option>
-                    <option value="Hanks">Hanks</option>
-                    <option value="Cone">Cone</option>
-                    <option value="Pice Dye Acid Wash">Pice Dye Acid Wash</option>
+            <div className={`${isFiltered ? 'grid-cols-3  w-[27rem]' : 'grid-cols-2 w-[22rem]'} grid gap-2 mb-4 `}>
+
+                <select onChange={(e) => handleFilter(e)} className={`${theme === 'dark' ? 'bg-gray-700 border text-gray-200' : 'bg-white text-black'} border p-2 rounded-md outline-none`} name="month" id="">
+                    <option value="month">Month</option>
+                    {
+                        [...new Set(getSummary?.map(s => s.month_name))].map((month, index) => (
+                            <option key={index} value={month}>{month}</option>
+                        ))
+                    }
                 </select>
-                <select className={`${theme === 'dark' ? 'bg-gray-700 border text-gray-200' : 'bg-white text-black'} border p-2 rounded-md outline-none`} name="month" id="">
-                    <option value="Section">Month</option>
-                    <option value="January">January</option>
-                    <option value="February">February</option>
-                    <option value="March">March</option>
+                <select onChange={(e) => handleFilter(e, 'marketing_name')} className={`${theme === 'dark' ? 'bg-gray-700 border text-gray-200' : 'bg-white text-black'} border p-2 rounded-md outline-none`} name="marketing" id="">
+                    <option value="marketing">Choose Marketing</option>
+                    {
+                        [...new Set(getSummary?.map(s => s.marketing_name))].map((marketing_name, index) => (
+                            <option key={index} value={marketing_name}>{marketing_name}</option>
+                        ))
+                    }
                 </select>
-                <select className={`${theme === 'dark' ? 'bg-gray-700 border text-gray-200' : 'bg-white text-black'} border p-2 rounded-md outline-none`} name="marketing" id="">
-                    <option value="Section">Marketing</option>
-                    <option value="January">Mr Chunnu</option>
-                    <option value="February">Unknown</option>
-                    <option value="March">Someone</option>
-                </select>
+                {
+                    isFiltered && (
+                        <button className="bg-red-500 bg-opacity-40 border rounded-sm border-red-500 text-red-800" onClick={handleResetFilter}>Reset</button>
+                    ) 
+                }
             </div>
             <div className="">
-                <div className="border-b grid grid-cols-7  mb-3 justify-center text-center p-2">
+                <div className="border-b grid grid-cols-7  mb-3 justify-center  text-center p-2">
                     <h2>#</h2>
                     <h2>PI Qty</h2>
                     <h2>Marketing Name</h2>
@@ -48,8 +79,8 @@ const Summary = () => {
                 </div>
                 {
                     getSummary?.map((summary, index) =>
-                        <div key={index} className="grid grid-cols-7 border-b mb-3 p-2 text-center">
-                            <h2>
+                        <div key={index} className="grid grid-cols-7 border-b mb-3 p-2 items-center text-center">
+                            <h2 className="">
                                 {index + 1}
                             </h2>
                             <h2>
@@ -60,7 +91,7 @@ const Summary = () => {
                             </h2>
 
                             <h2>
-                                {summary?.total_dyeing_qty}
+                                {summary?.total_dyeing_qty  }
                             </h2>
                             <h2>
                                 {summary?.total_sample_adjust_qty}

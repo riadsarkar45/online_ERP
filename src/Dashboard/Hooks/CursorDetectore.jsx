@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useRef, useEffect } from "react";
 import Alert from "../../Components/Alert";
+import { useSocket } from "./Socket";
 
 const CursorInactivityContext = createContext();
 export const useCursorInactivity = () => useContext(CursorInactivityContext);
@@ -8,7 +9,7 @@ const CursorDetector = ({ children }) => {
     const [isInactive, setIsInactive] = useState(false);
 
     const [isSmallScreen, setIsSmallScreen] = useState(false);
-
+    const socket = useSocket();
     const scrollTimeout = useRef(null);
     const scrollInterval = useRef(null);
 
@@ -44,6 +45,10 @@ const CursorDetector = ({ children }) => {
             clearInterval(scrollInterval.current);
         };
     }, [isInactive]);
+
+
+
+   
 
 
     return (
