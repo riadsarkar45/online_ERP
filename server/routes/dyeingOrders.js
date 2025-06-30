@@ -116,7 +116,7 @@ userRouters.post('/add_new_dyeing_order', async (req, res) => {
         marketing_name: req.body.marketing_name,
         currentMonth: currentM,
     });
-    const { marketing_name, month_name, sectionName, pi_no, dyeing_order_qty, currentMonth, total_sample_adjust_qty, total_store_delivery } = req.body || {};
+    const { marketing_name, month_name, sectionName,  dyeing_order_qty, currentMonth, total_sample_adjust_qty, total_store_delivery } = req.body || {};
     if (dyeingOrderFound) {
         await classUserServices.updateData(
             { marketing_name: marketing_name },

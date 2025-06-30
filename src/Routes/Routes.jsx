@@ -5,6 +5,7 @@ import AddNewOrder from '../Dashboard/Pages/AddNewOrder.jsx';
 import Orders from '../Dashboard/Pages/Orders.jsx';
 import Production from '../Dashboard/Pages/Production.jsx';
 import Summary from '../Dashboard/Pages/marketingSummary/Summary.jsx';
+import PiSummary from '../Dashboard/Pages/PiSummary.jsx';
 const Routes = createBrowserRouter([
     {
         path: "/",
@@ -33,6 +34,10 @@ const Routes = createBrowserRouter([
             {
                 path: "/dashboard/summary",
                 element: <Summary />,
+            },
+            {
+                path: "/dashboard/pi-summary",
+                element: <PiSummary />,
             }
         ]
     },
