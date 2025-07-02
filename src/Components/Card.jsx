@@ -4,7 +4,7 @@ import { useThemeMode } from "../Dashboard/Hooks/Theme";
 
 const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus, order }) => {
 
-    const { factory_name, marketing_name, total_delivery_order,yarn_type, total_store_delivery, submission_date, dyeing_order, productionQty, merchandiser_name, dyeing_order_qty, production_reports } = data || {};
+    const { factory_name, marketing_name, pi_no, total_delivery_order,yarn_type, total_store_delivery, submission_date, dyeing_order, productionQty, merchandiser_name, dyeing_order_qty, production_reports } = data || {};
 
     const [isShowDetail, setIsShowDetail] = useState(false);
     const { theme } = useThemeMode();
@@ -71,7 +71,7 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
                         <input
                             name="productionQty"
 
-                            onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name)}
+                            onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name, pi_no, yarn_type)}
                             className={`${theme === 'dark' ? 'bg-gray-700 border text-gray-200' : 'bg-white text-black'} border rounded-l-md w-[20rem] outline-none border-r-0 p-2`}
                             type="text"
                             placeholder={`${getStatus} Qty`}
@@ -79,7 +79,7 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
 
                         <select
                             name="status"
-                            onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name)}
+                            onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name, pi_no, yarn_type)}
                             className={`${theme === 'dark' ? 'bg-gray-700 border text-gray-200' : 'bg-white text-black'} border outline-none border-l p-2 w-[10rem]`}
                         >
                             <option defaultValue="Select Status">Select Status</option>
@@ -94,7 +94,7 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
                                 <input
                                     name="chalan_no"
 
-                                    onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name)}
+                                    onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name, pi_no, yarn_type)}
                                     className={`${theme === 'dark' ? 'bg-gray-700 border text-gray-200' : 'bg-white text-black'} w-[10rem] border-1 border border-l-0 p-2 outline-none`}
                                     type="text"
                                     placeholder='Chalan NO'
@@ -103,7 +103,7 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
                                 <input
                                     name="do_no"
 
-                                    onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name)}
+                                    onChange={(e) => handleProductionQty(e, dyeing_order, marketing_name, pi_no, yarn_type)}
                                     className={`${theme === 'dark' ? 'bg-gray-700 border text-gray-200' : 'bg-white text-black'} w-[10rem] border-1 border border-l-0 p-2 outline-none`}
                                     type="text"
                                     placeholder='DO NO'

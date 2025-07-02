@@ -11,7 +11,7 @@ export const SocketProvider = ({ children }) => {
     const socketIo = io('http://localhost:3000');
 
     socketIo.on('connect', () => {
-      console.log('Socket connected:', socketIo.id);
+      // console.log('Socket connected:', socketIo.id);
 
       // Start sending speed test requests repeatedly
       intervalRef.current = setInterval(() => {
@@ -20,7 +20,7 @@ export const SocketProvider = ({ children }) => {
     });
 
     socketIo.on('speed-test-result', (data) => {
-      console.log('Speed test result received:', data);
+      // console.log('Speed test result received:', data);
     });
 
     socketIo.on('connect_error', (err) => {

@@ -1,6 +1,6 @@
 const speedMeter = (socket, io) => {
   socket.on('start-speed-test', () => {
-    console.log(`Speed test started by ${socket.id}`);
+    // console.log(`Speed test started by ${socket.id}`);
 
     const results = {
       userId: socket.id,              // Include who started the test

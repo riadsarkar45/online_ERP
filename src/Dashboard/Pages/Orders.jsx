@@ -62,18 +62,20 @@ const Orders = () => {
             });
     }
 
-    const handleProductionQty = (e, dyeing_order, marketing_name) => {
+    const handleProductionQty = (e, dyeing_order, marketing_name, pi_no, yarn_type) => {
         const { name, value, } = e.target;
         console.log(dataToUpdate.status);
         setDataToUpdate(prev => ({
             ...prev,
             dyeing_order,
             marketing_name,
-
+            pi_no: Number(pi_no),
+            yarn_type,
             [name]: value,
         }));
 
     };
+    console.log("Data to update:", dataToUpdate);
 
     if (isLoading) {
         return <div className="w-[95%] flex justify-center h-[100vh] items-center m-auto mt-2">Loading...</div>;

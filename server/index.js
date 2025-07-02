@@ -35,7 +35,7 @@ const io = socketIo(server, {
 });
 
 io.on('connection', (socket) => {
-  console.log('Client connected:', socket.id);
+  // console.log('Client connected:', socket.id);
 
   speedMeter(socket, io)
 
