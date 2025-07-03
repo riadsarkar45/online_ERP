@@ -18,29 +18,13 @@ summaryRouters.get('/summary', async (req, res) => {
 
 summaryRouters.get('/pi-summary', async (req, res) => {
   try {
-    const dyeingOrders = await classUserServices.fetchData('dyeing_orders');
+    const piWiseSummary = await classUserServices.fetchData('pi_wise_report');
 
-    if (!dyeingOrders || dyeingOrders.length === 0) {
+    if (!piWiseSummary || piWiseSummary.length === 0) {
       return res.status(404).json({ error: "No PI summary data found" });
     }
 
-    const piNos = [
-      ...new Set(
-        dyeingOrders
-          .map(order => String(order.pi_no).trim()) // normalize all to string
-          .filter(Boolean) // remove undefined/null/empty
-      )
-    ].sort((a, b) => Number(a) - Number(b));
-
-    // Step 3: Optionally, group by pi_no if you want per-pi summaries
-    // const grouped = Object.groupBy(dyeingOrders, o => o.pi_no); // Node 20+
-    // fallback: group manually if needed
-
-    // Step 4: Send the response
-    res.json({
-      summary: dyeingOrders,
-      pi_nos: piNos
-    });
+    res.send(piWiseSummary)
 
   } catch (error) {
     console.error('Error fetching PI summary:', error);

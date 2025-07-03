@@ -16,20 +16,44 @@ class User_Services {
     }
   }
 
-  async updateData(filter, updateFields, collectionName) {
-    try {
-      await this.db.connect();
-      const dbInstance = this.db.getDB();
-
-      return await dbInstance.collection(collectionName).updateOne(
-        filter,
-        { $inc: updateFields }
-      );
-    } catch (err) {
-      console.error("Update failed:", err.message);
-      throw err;
-    }
+/**
+ * Update a MongoDB document with dynamic update operators
+ * @param {Object} filter - MongoDB query filter
+ * @param {Object} updateFields - Object containing update operators like $inc, $set, $push
+ * @param {String} collectionName - The name of the collection
+ * @param {Object} options - Optional MongoDB update options (e.g., { upsert: true })
+ */
+async updateData(filter, updateFields, collectionName, options = {}) {
+  if (!filter || typeof filter !== 'object') {
+    throw new Error("Invalid or missing filter object");
   }
+
+  if (!updateFields || typeof updateFields !== 'object') {
+    throw new Error("Invalid or missing updateFields object");
+  }
+
+  if (!collectionName || typeof collectionName !== 'string') {
+    throw new Error("Invalid or missing collection name");
+  }
+
+  try {
+    await this.db.connect();
+    const dbInstance = this.db.getDB();
+
+    // Perform the update
+    const result = await dbInstance.collection(collectionName).updateOne(
+      filter,
+      updateFields, // This should include $inc, $set, $push, etc.
+      options
+    );
+
+    return result;
+  } catch (err) {
+    console.error(`[MongoDB Update Error] ${err.message}`);
+    throw err;
+  }
+}
+
 
   async fetchData(collectionName, options = {}) {
     if (!collectionName) throw new Error("Collection name is required");

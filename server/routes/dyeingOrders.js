@@ -77,12 +77,13 @@ userRouters.post('/update-production', async (req, res) => {
         yarn_type: checkData.yarn_type,
     });
 
-    if(isMatchFoundWithPi){
+    if (isMatchFoundWithPi) {
         await classUserServices.updateData(
             { pi_no: checkData.pi_no, yarn_type: checkData.yarn_type },
-            { [currentStatus.dyeingField]: qty },
+            { $inc: { [currentStatus.dyeingField]: qty } },
             'pi_wise_report'
         );
+
     }
 
     const checkSummary = await classUserServices.findDataIfExist('summary', {
@@ -93,17 +94,19 @@ userRouters.post('/update-production', async (req, res) => {
     if (checkDyeingOrder) {
         await classUserServices.updateData(
             { dyeing_order: checkData.dyeing_order },
-            { [currentStatus.dyeingField]: qty },
+            { $inc: { [currentStatus.dyeingField]: qty } },
             'dyeing_orders'
         );
+
     }
 
     if (checkSummary) {
         await classUserServices.updateData(
             { marketing_name: checkData.marketing_name, currentMonth: currentM },
-            { [currentStatus.summaryField]: qty },
+            { $inc: { [currentStatus.summaryField]: qty } },
             'summary'
         );
+
     }
 
     const dataToInsert = await classUserServices.insertToTheDatabase(checkData, 'production_report');
@@ -124,7 +127,7 @@ userRouters.post('/add_new_dyeing_order', async (req, res) => {
     });
     if (exists) return res.send({ error: 'Dyeing order already inserted' })
     const insertOrder = await classUserServices.insertToTheDatabase(req.body, 'dyeing_orders')
-    const { marketing_name, month_name, sectionName, dyeing_order_qty, currentMonth, total_sample_adjust_qty, total_store_delivery} = req.body || {};
+    const { marketing_name, month_name, sectionName, dyeing_order_qty, currentMonth, total_sample_adjust_qty, total_store_delivery } = req.body || {};
 
 
     const isPiSummaryFound = await classUserServices.findDataIfExist('pi_wise_report',
@@ -132,12 +135,11 @@ userRouters.post('/add_new_dyeing_order', async (req, res) => {
     );
     if (isPiSummaryFound) {
         await classUserServices.updateData(
-            {
-                pi_no: Number(req.body.pi_no),
-            },
-            { dyeing_order_qty: Number(req.body.dyeing_order_qty) },
+            { pi_no: Number(req.body.pi_no) },
+            { $inc: { dyeing_order_qty: Number(req.body.dyeing_order_qty) } },
             'pi_wise_report'
-        )
+        );
+
 
     } else {
         await classUserServices.insertToTheDatabase(
@@ -166,9 +168,10 @@ userRouters.post('/add_new_dyeing_order', async (req, res) => {
                 marketing_name: marketing_name,
                 currentMonth: currentM,
             },
-            { total_dyeing_qty: Number(req.body.dyeing_order_qty) },
+            { $inc: { total_dyeing_qty: Number(req.body.dyeing_order_qty) } },
             'summary'
-        )
+        );
+
     } else {
         await classUserServices.insertToTheDatabase(
             {
