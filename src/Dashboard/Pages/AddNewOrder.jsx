@@ -110,13 +110,13 @@ const AddNewOrder = () => {
 
   return (
     <div className="mt-5 w-[95%] m-auto">
-      <div className={`${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-white text-black'} p-4 border rounded-lg shadow-sm`}>
+      <div className={`${theme === 'dark' ? 'bg-gray-700 text-red-200' : 'bg-white text-black'} p-4 border rounded-lg shadow-sm`}>
         <input
           name="dyeing_order"
           value={formData.dyeing_order}
           onChange={handleChange}
           placeholder="Dyeing Order"
-          className="w-full p-2 border rounded mb-4 bg-inherit outline-none"
+          className="w-full p-2 border rounded mb-4 outline-none"
         />
 
         <div className="grid grid-cols-2 gap-4 mb-4">
