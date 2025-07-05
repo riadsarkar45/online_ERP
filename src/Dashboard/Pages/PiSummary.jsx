@@ -15,14 +15,13 @@ const PiSummary = () => {
     queryKey: ["pi-summary"],
     queryFn: async () => {
       const res = await axios.get("/pi-summary");
+      console.log(res.data)
       return res.data;
     },
   });
 
-  // Handle loading state
   if (isLoading) return <div className="text-center">Loading...</div>;
 
-  // Handle error state
   if (error)
     return (
       <div className="text-red-500 text-center">
@@ -40,16 +39,23 @@ const PiSummary = () => {
             key={index}
             className="p-4 border mb-2 rounded shadow"
           >
-            <div className="grid grid-cols-3 gap-4 mb-4">
-              <p><strong>Marketing:</strong> {item.marketing_name}</p>
-              <p><strong>Section:</strong> {item.sectionName}</p>
-              <p><strong>Yarn:</strong> {item.yarn_type}</p>
+            <div className="grid grid-cols-3 border-b p-1 gap-4">
+              <p className=""><strong>Marketing:</strong> {item.marketing_name}</p>
             </div>
-            <div className="grid grid-cols-3 gap-4">
-              <p><strong>Dyeing:</strong> {item.productionQty}</p>
-              <p><strong>Sample:</strong> {item.total_sample_adjust_qty}</p>
-              <p><strong>Delivery:</strong> {item.total_store_delivery}</p>
-            </div>
+            {
+              item?.dyeing_sections?.map((item, index) =>
+                <div key={index} className="grid grid-cols-4 gap-2 p-2 ">
+                  <p className=""><strong>Section:</strong> {item.sectionName}</p>
+                  <p><strong>Yarn:</strong> {item.yarn_type}</p>
+                  <p><strong>Dyeing Order:</strong> {item.dyeing_order_qty}</p>
+                  <p><strong>Production Qty:</strong> {item.productionQty}</p>
+                  <p><strong>Sample Adjust:</strong> {item.total_sample_adjust_qty}</p>
+                  <p><strong>Store Delivery:</strong> {item.total_store_delivery}</p>
+                </div>
+
+              )
+            }
+
           </div>
         ))}
       </div>

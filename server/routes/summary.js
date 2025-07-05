@@ -24,13 +24,33 @@ summaryRouters.get('/pi-summary', async (req, res) => {
       return res.status(404).json({ error: "No PI summary data found" });
     }
 
-    res.send(piWiseSummary)
+    const groupedByMarketing = {};
+
+    for (const item of piWiseSummary) {
+      const marketing = item.marketing_name?.trim();
+
+      if (!groupedByMarketing[marketing]) {
+        groupedByMarketing[marketing] = [];
+      }
+
+      groupedByMarketing[marketing].push(item);
+    }
+
+    const result = Object.entries(groupedByMarketing)
+      .map(([marketing_name, items]) => ({
+        marketing_name,
+        dyeing_sections: items.sort((a, b) => a.pi_no - b.pi_no),
+      }))
+      .sort((a, b) => a.marketing_name.localeCompare(b.marketing_name));
+
+    res.send(result);
 
   } catch (error) {
     console.error('Error fetching PI summary:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 
 

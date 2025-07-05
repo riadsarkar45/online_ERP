@@ -78,7 +78,7 @@ const Summary = () => {
                 </div>
                 {
                     getSummary?.map((summary, index) =>
-                        <div key={index} className="grid grid-cols-6 border-b mb-3 p-2 items-center text-center">
+                        <div key={index} className="grid grid-cols-6 h-14 border-b mb-3 p-2 items-center justify-center text-center">
                             <h2 className="">
                                 {index + 1}
                             </h2>
