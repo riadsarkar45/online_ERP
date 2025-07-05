@@ -15,4 +15,75 @@ issueRoutes.get('/raw-issue', async (req, res) => {
     }
 })
 
+issueRoutes.post('/update-raw-yarn', async (req, res) => {
+    try {
+        const {
+            order_no,
+            yarn_type,
+            issue_qty,
+            type
+        } = req.body;
+
+        const trimmedOrderNo = order_no?.trim();
+        const trimmedYarnType = yarn_type?.trim();
+        const issueQty = Number(issue_qty);
+
+        if (!trimmedOrderNo || !trimmedYarnType || !type || isNaN(issueQty) || issueQty <= 0) {
+            return res.status(400).json({ message: "Invalid input", type: "error" });
+        }
+
+        const [dyeingOrder, rawYarnBalance] = await Promise.all([
+            classUserServices.findDataIfExist('dyeing_orders', {
+                dyeing_order: trimmedOrderNo,
+                yarn_type: trimmedYarnType
+            }),
+            classUserServices.findDataIfExist('raw-yarn-balance', {
+                yarn_type: trimmedYarnType
+            })
+        ]);
+
+        if (type === 'Total Rcv Qty') {
+            await classUserServices.updateData(
+                { yarn_type: trimmedYarnType },
+                { $inc: { quantity: issueQty } },
+                'raw-yarn-balance'
+            );
+        }
+
+        if (type === 'Total Issue Qty') {
+            if (!dyeingOrder) {
+                return res.status(404).json({ message: "Dyeing order not found", type: "error" });
+            }
+
+            await classUserServices.updateData(
+                { pi_no: Number(dyeingOrder.pi_no) },
+                { $inc: { total_raw_issue: issueQty } },
+                'pi_wise_report'
+            );
+
+            if (rawYarnBalance) {
+                await classUserServices.updateData(
+                    { yarn_type: trimmedYarnType },
+                    { $inc: { quantity: -issueQty } },
+                    'raw-yarn-balance'
+                );
+            }
+        }
+
+        const insertResult = await classUserServices.insertToTheDatabase(req.body, 'raw-issue');
+        if (!insertResult) {
+            return res.status(500).json({ message: 'Failed to insert raw yarn data', type: 'error' });
+        }
+
+        return res.status(200).json({ message: 'Raw yarn balance updated', type: 'success' });
+
+    } catch (err) {
+        console.error('[update-raw-yarn] Error:', err.message);
+        return res.status(500).json({ message: 'Server error', type: 'error' });
+    }
+});
+
+
+
+
 module.exports = issueRoutes;

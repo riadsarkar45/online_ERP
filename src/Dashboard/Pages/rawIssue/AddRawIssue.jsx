@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import AxiosSecure from "../../Hooks/AxiosSecure";
 import { useState } from "react";
 import { useThemeMode } from "../../Hooks/Theme";
+import toast from "react-hot-toast";
 const AddRawIssue = () => {
     const useAxiosSecure = AxiosSecure();
     const { theme } = useThemeMode();
@@ -9,8 +10,8 @@ const AddRawIssue = () => {
     const [formData, setFormData] = useState({
         lot_no: 0,
         yarn_type: "",
-        sample_order: "",
-        issue_qty: "",
+        order_no: "",
+        issue_qty: 0,
         type: "",
     });
     const { refetch } = useQuery({
@@ -32,6 +33,28 @@ const AddRawIssue = () => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
+    const handleUpdateRawYarnBalance = () => {
+        try {
+            useAxiosSecure.post('/update-raw-yarn', formData)
+                .then((res) => {
+                    if (res.data.type === 'error') {
+                        toast.error(res.data.message);
+                        refetch();
+                        console.log(res.data.type);
+                    } else {
+                        toast.success(res.data.message);
+                        refetch();
+                    }
+                })
+                .catch((error) => {
+                    console.error("There was an error!", error);
+                });
+
+        } catch (e) {
+            console.log(e);
+            return null
+        }
+    }
     console.log(formData);
     return (
         <div className={`${theme === 'dark' ? 'bg-gray-800 text-gray-100' : 'bg-white text-black'} mt-4 p-2`}>
@@ -39,7 +62,7 @@ const AddRawIssue = () => {
                 <div className={`${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-white text-black'} grid grid-cols-5`}>
                     <input onChange={(e) => getRawIssueData(e)} placeholder="Lot No" className="border outline-none p-2 rounded-l-md bg-inherit" name="lot_no" type="text" />
                     <input onChange={(e) => getRawIssueData(e)} placeholder="Yarn Type" className="border outline-none p-2 bg-inherit " name="yarn_type" type="text" />
-                    <input onChange={(e) => getRawIssueData(e)} placeholder="Order No" className="border outline-none p-2 bg-inherit " name="sample_order" type="text" />
+                    <input onChange={(e) => getRawIssueData(e)} placeholder="Order No" className="border outline-none p-2 bg-inherit " name="order_no" type="text" />
                     <input onChange={(e) => getRawIssueData(e)} placeholder="Issue Qty LBS" className="border outline-none bg-inherit p-2" name="issue_qty" type="text" />
                     <select onChange={(e) => getRawIssueData(e)} name="type" className="bg-inherit outline-none border">
                         <option>Total Issue Qty</option>
@@ -47,7 +70,7 @@ const AddRawIssue = () => {
                     </select>
                 </div>
                 <div>
-                    <button className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition-colors duration-300">
+                    <button onClick={() => handleUpdateRawYarnBalance()} className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600 transition-colors duration-300">
                         Submit
                     </button>
                 </div>
