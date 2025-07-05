@@ -4,7 +4,7 @@ import { useThemeMode } from "./Hooks/Theme";
 import { Toaster } from "react-hot-toast";
 
 const Dashboard = () => {
-    const { theme, toggleTheme, resetTheme } = useThemeMode();
+    const { theme, toggleTheme, resetTheme, hideSidebarAndHeader } = useThemeMode();
     const popupRef = useRef();
     const [popUp, setPopUp] = useState(false);
     const changeTheme = () => {
@@ -14,7 +14,7 @@ const Dashboard = () => {
 
     return (
         <div className={`${theme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-white text-black'} h-screen overflow-hidden`}>
-            <aside id="sidebar-multi-level-sidebar" className="fixed top-0 border-r left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
+            <aside id="sidebar-multi-level-sidebar" className={` ${hideSidebarAndHeader ? 'hidden' : ''} fixed top-0 border-r left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0`} aria-label="Sidebar">
                 <div className={`h-full px-3 py-4 overflow-y-auto ${theme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-white text-black'}`}>
                     <ul className="space-y-2 font-medium">
                         <li className=''>
@@ -121,7 +121,7 @@ const Dashboard = () => {
             </aside>
 
             <div className={`h-full pl-64 md:pl-64 flex flex-col `}>
-                <header className={`${theme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-white text-black'} fixed border-b top-0 left-64 right-0 h-16 shadow flex items-center justify-between px-4 z-30`}>
+                <header className={`${theme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-white text-black'} ${hideSidebarAndHeader ? 'hidden' : ''} fixed border-b top-0 left-64 right-0 h-16 shadow flex items-center justify-between px-4 z-30`}>
                     <div className="text-sm"></div>
                     <h1 onClick={() => changeTheme()} className="text-xl font-semibold w-[3rem] h-[3rem] flex items-center justify-center rounded-lg bg-red-500">T</h1>
 

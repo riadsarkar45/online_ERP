@@ -4,7 +4,7 @@ import { useThemeMode } from "../Dashboard/Hooks/Theme";
 
 const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus, order }) => {
 
-    const { factory_name, marketing_name, pi_no, total_delivery_order,yarn_type, total_store_delivery, submission_date, dyeing_order, productionQty, merchandiser_name, dyeing_order_qty, production_reports } = data || {};
+    const { factory_name, marketing_name, pi_no, total_delivery_order, yarn_type, total_store_delivery, submission_date, dyeing_order, productionQty, merchandiser_name, dyeing_order_qty, production_reports } = data || {};
 
     const [isShowDetail, setIsShowDetail] = useState(false);
     const { theme } = useThemeMode();
@@ -13,11 +13,17 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
         setIsShowDetail(show);
     }
 
-
+    // {productionQty > dyeing_order_qty ? `${dyeing_order_qty - productionQty}
     return (
         <div>
-            <div className={`shadow-sm rounded-lg p-4 mb-2 ${theme === 'dark' ? 'bg-gray-800 text-gray-200' : 'bg-white text-black border'}`}>
-                <div className="flex justify-between items-center mb-4">
+            <div
+                className={`shadow-sm rounded-lg p-4 mb-2 ${productionQty > dyeing_order_qty
+                        ? 'bg-red-500 bg-opacity-35'
+                        : theme === 'dark'
+                            ? 'bg-gray-800 text-gray-200'
+                            : ''
+                    }`}
+            >                <div className="flex justify-between items-center mb-4">
                     <h2 className=" font-semibold bg-blue-500 bg-opacity-30 text-blue-700 p-1 rounded-md">{dyeing_order}</h2>
 
                     {/* <h2
@@ -126,10 +132,10 @@ const Card = ({ data, handleProductionQty, handleUpdate, checkStatus, getStatus,
                                 production_reports.map((item, index) => (
                                     <div key={index}>
                                         <div className={`grid mb-3 ${item?.status === 'Total Store Delivery'
-                                                ? 'grid-cols-3 bg-red-500 p-1 border font-semibold text-red-700 border-red-500 rounded-md bg-opacity-30'
-                                                : item?.status === 'Total Delivery Order'
-                                                    ? 'grid-cols-3 bg-gray-500 border-gray-300 font-semibold border p-1 rounded-md bg-opacity-30'
-                                                    : 'grid-cols-3'
+                                            ? 'grid-cols-3 bg-red-500 p-1 border font-semibold text-red-700 border-red-500 rounded-md bg-opacity-30'
+                                            : item?.status === 'Total Delivery Order'
+                                                ? 'grid-cols-3 bg-gray-500 border-gray-300 font-semibold border p-1 rounded-md bg-opacity-30'
+                                                : 'grid-cols-3'
                                             }`}>
                                             <h2>{item?.productionQty}</h2>
                                             <h2>{item?.status}</h2>
