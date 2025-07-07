@@ -29,7 +29,7 @@ issueRoutes.post('/update-raw-yarn', async (req, res) => {
         const issueQty = Number(issue_qty);
 
         if (!trimmedOrderNo || !trimmedYarnType || !type || isNaN(issueQty) || issueQty <= 0) {
-            return res.status(400).json({ message: "Invalid input", type: "error" });
+            return res.send({ message: "Invalid input", type: "error" });
         }
 
         const [dyeingOrder, rawYarnBalance] = await Promise.all([
@@ -52,7 +52,7 @@ issueRoutes.post('/update-raw-yarn', async (req, res) => {
 
         if (type === 'Total Issue Qty') {
             if (!dyeingOrder) {
-                return res.status(404).json({ message: "Dyeing order not found", type: "error" });
+                return res.send({ message: "Dyeing order not found", type: "error" });
             }
 
             await classUserServices.updateData(
@@ -72,14 +72,14 @@ issueRoutes.post('/update-raw-yarn', async (req, res) => {
 
         const insertResult = await classUserServices.insertToTheDatabase(req.body, 'raw-issue');
         if (!insertResult) {
-            return res.status(500).json({ message: 'Failed to insert raw yarn data', type: 'error' });
+            return res.send({ message: 'Failed to insert raw yarn data', type: 'error' });
         }
 
         return res.status(200).json({ message: 'Raw yarn balance updated', type: 'success' });
 
     } catch (err) {
         console.error('[update-raw-yarn] Error:', err.message);
-        return res.status(500).json({ message: 'Server error', type: 'error' });
+        return res.send({ message: 'Server error', type: 'error' });
     }
 });
 

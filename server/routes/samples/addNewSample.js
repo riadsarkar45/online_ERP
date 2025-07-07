@@ -84,50 +84,79 @@ userSampleRouters.post('/new-sample', async (req, res) => {
 });
 
 userSampleRouters.get('/samples', async (req, res) => {
-    const sampleOrders = await classUserServices.fetchData('sample_orders');
+    try {
+        const sampleOrders = await classUserServices.fetchData('sample_orders');
+        const { month, marketing } = req.query;
 
-    if (!sampleOrders || sampleOrders.length === 0) {
-        return res.send({ message: 'No sample order found', type: 'error' });
-    }
-
-    const samplesGroupByMarketing = {};
-
-    for (const item of sampleOrders) {
-        const marketing = item.marketing_name?.trim();
-        const yarn_type = item.yarn_type?.trim();
-        const section = item.sectionName?.trim();
-        const month_name = item.month_name?.trim();
-        const qty = parseFloat(item.dyeing_order_qty || 0);
-
-        if (!samplesGroupByMarketing[marketing]) {
-            samplesGroupByMarketing[marketing] = {};
+        if (!Array.isArray(sampleOrders) || sampleOrders.length === 0) {
+            return res.send({ message: 'No sample orders found', type: 'error' });
         }
 
-        const key = `${yarn_type}__${section}`;
+        const filtered = sampleOrders.filter(item => {
+            const matchMonth = month ? item.month_name === month : true;
+            const matchMarketing = marketing ? item.marketing_name === marketing : true;
+            return matchMonth && matchMarketing;
+        });
 
-        if (!samplesGroupByMarketing[marketing][key]) {
-            samplesGroupByMarketing[marketing][key] = {
-                yarn_type,
-                sectionName: section,
-                total_dyeing_order_qty: 0,
-                month_name: month_name,
-                orders: [],
-            };
-        }
+        const groupBy = (list, keyFn) => {
+            const map = {};
+            for (const item of list) {
+                const key = keyFn(item);
+                if (!key) continue;
+                if (!map[key]) map[key] = [];
+                map[key].push(item);
+            }
+            return map;
+        };
 
-        samplesGroupByMarketing[marketing][key].total_dyeing_order_qty += qty;
-        samplesGroupByMarketing[marketing][key].orders.push(item);
+        const buildGroupedSections = (items) => {
+            const sectionMap = {};
+            for (const item of items) {
+                const yarn_type = item.yarn_type?.trim();
+                const section = item.sectionName?.trim();
+                const key = `${yarn_type}__${section}`;
+
+                if (!sectionMap[key]) {
+                    sectionMap[key] = {
+                        yarn_type,
+                        sectionName: section,
+                        month_name: item.month_name,
+                        factoryName: item.factory_name,
+                        total_dyeing_order_qty: 0,
+                        orders: [],
+                    };
+                }
+
+                sectionMap[key].total_dyeing_order_qty += parseFloat(item.dyeing_order_qty || 0);
+                sectionMap[key].orders.push(item);
+            }
+
+            return Object.values(sectionMap).sort((a, b) => a.yarn_type.localeCompare(b.yarn_type));
+        };
+
+        const marketingGroups = groupBy(filtered, item => item.marketing_name?.trim());
+        const marketingWiseSamples = Object.entries(marketingGroups).map(([marketing_name, items]) => ({
+            marketing_name,
+            dyeing_sections: buildGroupedSections(items),
+        }));
+
+        const factoryGroups = groupBy(filtered, item => item.factory_name?.trim());
+        const factoryWiseSamples = Object.entries(factoryGroups).map(([factory_name, items]) => ({
+            factory_name,
+            dyeing_sections: buildGroupedSections(items),
+        }));
+
+        res.send({
+            marketingWiseSamples,
+            factoryWiseSamples
+        });
+    } catch (error) {
+        console.error('Error fetching samples:', error);
+        res.status(500).send({ message: 'Internal server error', error });
     }
-
-    const samples = Object.entries(samplesGroupByMarketing).map(([marketing_name, group]) => ({
-        marketing_name,
-        dyeing_sections: Object.values(group).sort((a, b) =>
-            a.yarn_type.localeCompare(b.yarn_type)
-        ),
-    })).sort((a, b) => a.marketing_name.localeCompare(b.marketing_name));
-
-    res.send(samples);
 });
+
+
 
 
 module.exports = userSampleRouters

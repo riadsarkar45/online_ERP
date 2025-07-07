@@ -85,7 +85,7 @@ const Dashboard = () => {
                                     <path d="M2 12h20" />
                                 </svg>
 
-                                <span className="ms-3">All Samples Summary</span>
+                                <span className="ms-3">Sample Summary</span>
                             </Link>
                         </li>
                         <li>
