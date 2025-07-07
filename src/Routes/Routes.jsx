@@ -7,6 +7,8 @@ import Production from '../Dashboard/Pages/Production.jsx';
 import Summary from '../Dashboard/Pages/marketingSummary/Summary.jsx';
 import PiSummary from '../Dashboard/Pages/PiSummary.jsx';
 import AddRawIssue from '../Dashboard/Pages/rawIssue/AddRawIssue.jsx';
+import AddNewSample from '../Dashboard/Pages/Sample/AddNewSample.jsx';
+import AllSamples from '../Dashboard/Pages/Sample/AllSamples.jsx';
 const Routes = createBrowserRouter([
     {
         path: "/",
@@ -43,6 +45,14 @@ const Routes = createBrowserRouter([
             {
                 path: "/dashboard/raw-issue",
                 element: <AddRawIssue />,
+            },
+            {
+                path: "/dashboard/addnewsample",
+                element: <AddNewSample />,
+            },
+            {
+                path: "/dashboard/samples",
+                element: <AllSamples />,
             }
         ]
     },

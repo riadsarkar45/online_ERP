@@ -47,7 +47,7 @@ const Dashboard = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link to='/dashboard/add-new-dyeing-order' className="flex items-center p-2  rounded-lg  hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                            <Link to='/dashboard/addnewsample' className="flex items-center p-2  rounded-lg  hover:bg-gray-100 dark:hover:bg-gray-700 group">
                                 <svg
                                     className="shrink-0 w-5 h-5 transition duration-75"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -65,6 +65,27 @@ const Dashboard = () => {
                                 </svg>
 
                                 <span className="ms-3">Add Sample Order</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to='/dashboard/samples' className="flex items-center p-2  rounded-lg  hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                <svg
+                                    className="shrink-0 w-5 h-5 transition duration-75"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M4 4c4 4 8 4 12 0" />
+                                    <path d="M4 20c4-4 8-4 12 0" />
+                                    <path d="M2 12h20" />
+                                </svg>
+
+                                <span className="ms-3">All Samples Summary</span>
                             </Link>
                         </li>
                         <li>

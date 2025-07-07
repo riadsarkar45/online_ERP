@@ -10,6 +10,7 @@ const db = new Database();
 const http = require('http');
 const speedMeter = require('./sockets/internetSpeedMeter');
 const issueRoutes = require('./routes/raw-issue');
+const userSampleRouters = require('./routes/samples/addNewSample');
 
 app.use(cors({
   origin: ['http://localhost:5173', 'https://south-dragon.vercel.app'],
@@ -24,6 +25,7 @@ const server = http.createServer(app);
 app.use('/api/', userRouters);
 app.use('/api/', summaryRouters);
 app.use('/api/', issueRoutes);
+app.use('/api/', userSampleRouters);
 
 app.get('/', async (req, res) => {
   res.json({ message: 'Pinged MongoDB!' });
