@@ -52,7 +52,7 @@ issueRoutes.post('/update-raw-yarn', async (req, res) => {
 
         if (type === 'Total Issue Qty') {
             if (!dyeingOrder) {
-                return res.send({ message: "Dyeing order not found", type: "error" });
+                return res.send({ message: "Dyeing order not found. Maybe it's not inserted.", type: "error" });
             }
 
             await classUserServices.updateData(

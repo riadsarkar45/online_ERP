@@ -8,6 +8,7 @@ const AddRawIssue = () => {
     const useAxiosSecure = AxiosSecure();
     const { theme } = useThemeMode();
     const [rawBalanceYarn, setRawBalanceYarn] = useState([]);
+    const [showRawEntryField, setRawEntryField] = useState(false)
     const [formData, setFormData] = useState({
         lot_no: 0,
         yarn_type: "",
@@ -68,11 +69,14 @@ const AddRawIssue = () => {
         window.location.reload();
     };
 
+    const handleRawEntryField = () => {
+        setRawEntryField(!showRawEntryField)
+    }
     return (
         <div className={`${theme === 'dark' ? 'bg-gray-800 text-gray-100' : 'bg-white text-black'} mt-4 p-2`}>
 
-            <div className="flex items-center gap-2 mb-4 no-print">
-                <div className={`grid grid-cols-5 gap-2 ${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-white text-black'}`}>
+            <div  className="flex items-center gap-2 mb-4 no-print">
+                <div className={`grid grid-cols-5 gap-2 ${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-white text-black'} ${showRawEntryField ? '': 'hidden'}`}>
                     <input onChange={getRawIssueData} placeholder="Lot No" className="border outline-none p-2 rounded-l-md bg-inherit" name="lot_no" type="text" />
                     <input onChange={getRawIssueData} placeholder="Yarn Type" className="border outline-none p-2 bg-inherit" name="yarn_type" type="text" />
                     <input onChange={getRawIssueData} placeholder="Order No" className="border outline-none p-2 bg-inherit" name="order_no" type="text" />
@@ -82,26 +86,31 @@ const AddRawIssue = () => {
                         <option>Total Rcv Qty</option>
                     </select>
                 </div>
-                <button onClick={handleUpdateRawYarnBalance} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                <button onClick={handleUpdateRawYarnBalance} className={`${showRawEntryField ? '': 'hidden'} bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition`}>
                     Submit
                 </button>
-                <button onClick={handlePrint} className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6 text-gray-700 dark:text-gray-300"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M6 9V4h12v5m-6 4h.01M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-2 0H8v4h8v-4z"
-                        />
-                    </svg>
-                
-                </button>
+                <div className="grid grid-cols-2 gap-2">
+                    <button onClick={handleRawEntryField} className={` bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition`}>
+                        +
+                    </button>
+                    <button onClick={handlePrint} className={`${showRawEntryField ? 'hidden': ''} bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition`}>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-6 h-6 text-gray-700 dark:text-gray-300"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 9V4h12v5m-6 4h.01M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-2 0H8v4h8v-4z"
+                            />
+                        </svg>
+
+                    </button>
+                </div>
             </div>
 
             <div ref={printRef} className="print-section">

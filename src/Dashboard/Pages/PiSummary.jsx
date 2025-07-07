@@ -15,47 +15,82 @@ const PiSummary = () => {
     queryKey: ["pi-summary"],
     queryFn: async () => {
       const res = await axios.get("/pi-summary");
-      console.log(res.data)
       return res.data;
     },
   });
 
-  if (isLoading) return <div className="text-center">Loading...</div>;
+  if (isLoading) return <div className="text-center py-10">Loading...</div>;
 
   if (error)
     return (
-      <div className="text-red-500 text-center">
+      <div className="text-red-500 text-center py-10">
         Error: {error.message || "Something went wrong."}
       </div>
     );
 
-
   return (
-    <div className={`${theme === 'dark' ? 'bg-gray-700 text-gray-200' : 'bg-white text-black'} p-2`}>
-
-      <div className="">
+    <div
+      className={` ${
+        theme === "dark" ? "bg-gray-700 text-gray-100" : "bg-gray-100 text-gray-900"
+      } p-3`}
+    >
+      <div className="space-y-6">
         {summaryData.map((item, index) => (
-          <div
-            key={index}
-            className="p-4 border mb-2 rounded shadow"
-          >
-            <div className="grid grid-cols-3 border-b p-1 gap-4">
-              <p className=""><strong>Marketing:</strong> {item.marketing_name}</p>
-            </div>
-            {
-              item?.dyeing_sections?.map((item, index) =>
-                <div key={index} className="grid grid-cols-4 gap-2 p-2 ">
-                  <p className=""><strong>Section:</strong> {item.sectionName}</p>
-                  <p><strong>Yarn:</strong> {item.yarn_type}</p>
-                  <p><strong>Dyeing Order:</strong> {item.dyeing_order_qty}</p>
-                  <p><strong>Production Qty:</strong> {item.productionQty}</p>
-                  <p><strong>Sample Adjust:</strong> {item.total_sample_adjust_qty}</p>
-                  <p><strong>Store Delivery:</strong> {item.total_store_delivery}</p>
+          <div key={index} className="border p-2 rounded-md">
+            <h2 className="text-xl font-semibold mb-3 border-gray-400 pb-1">
+              Marketing: {item.marketing_name}
+            </h2>
+
+            <div className=" gap-4">
+              {item?.pi_summaries?.map((summary, i) => (
+                <div
+                  key={i}
+                  className=" rounded-xl  p-4 "
+                >
+                  <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-400">
+                    PI No: {summary?.pi_no}
+                  </h3>
+
+                  <div className="mt-2 space-y-3 ">
+                    {summary?.factories?.map((factory, j) => (
+                      <div
+                        key={j}
+                        className="grid-cols-4 grid rounded-md p-3"
+                      >
+                        <p className="font-semibold mb-3">
+                          Factory:{" "}
+                          <span className="font-normal">{factory?.factory_name}</span>
+                        </p>
+                        <p>
+                          Dyeing Order:{" "}
+                          <span className="font-semibold text-green-600">
+                            {factory?.total_dyeing_order_qty}
+                          </span>
+                        </p>
+                        <p>
+                          Production:{" "}
+                          <span className="font-semibold text-yellow-600">
+                            {factory?.total_production_qty}
+                          </span>
+                        </p>
+                        <p>
+                          Store Delivery:{" "}
+                          <span className="font-semibold text-purple-600">
+                            {factory?.total_store_delivery}
+                          </span>
+                        </p>
+                        <p>
+                          Sample Adjust:{" "}
+                          <span className="font-semibold text-red-600">
+                            {factory?.total_sample_adjust_qty}
+                          </span>
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-
-              )
-            }
-
+              ))}
+            </div>
           </div>
         ))}
       </div>

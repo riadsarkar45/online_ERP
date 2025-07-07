@@ -18,9 +18,9 @@ summaryRouters.get('/summary', async (req, res) => {
 
 summaryRouters.get('/pi-summary', async (req, res) => {
   try {
-    const piWiseSummary = await classUserServices.fetchData('pi_wise_report');
+    const piWiseSummary = await classUserServices.fetchData('dyeing_orders');
 
-    if (!piWiseSummary || piWiseSummary.length === 0) {
+    if (!Array.isArray(piWiseSummary) || piWiseSummary.length === 0) {
       return res.status(404).json({ error: "No PI summary data found" });
     }
 
@@ -28,22 +28,47 @@ summaryRouters.get('/pi-summary', async (req, res) => {
 
     for (const item of piWiseSummary) {
       const marketing = item.marketing_name?.trim();
+      const pi_no = item.pi_no?.trim();
+      const factory_name = item.factory_name?.trim();
 
       if (!groupedByMarketing[marketing]) {
-        groupedByMarketing[marketing] = [];
+        groupedByMarketing[marketing] = {};
       }
 
-      groupedByMarketing[marketing].push(item);
+      if (!groupedByMarketing[marketing][pi_no]) {
+        groupedByMarketing[marketing][pi_no] = {};
+      }
+
+      if (!groupedByMarketing[marketing][pi_no][factory_name]) {
+        groupedByMarketing[marketing][pi_no][factory_name] = [];
+      }
+
+      groupedByMarketing[marketing][pi_no][factory_name].push(item);
     }
 
-    const result = Object.entries(groupedByMarketing)
-      .map(([marketing_name, items]) => ({
-        marketing_name,
-        dyeing_sections: items.sort((a, b) => a.pi_no - b.pi_no),
-      }))
-      .sort((a, b) => a.marketing_name.localeCompare(b.marketing_name));
+    const result = Object.entries(groupedByMarketing).map(([marketing_name, piGroups]) => ({
+      marketing_name,
+      pi_summaries: Object.entries(piGroups).map(([pi_no, factoryGroups]) => ({
+        pi_no,
+        factories: Object.entries(factoryGroups).map(([factory_name, items]) => {
+          const total_production_qty = items.reduce((sum, item) => sum + Number(item.total_production_qty || 0), 0);
+          const total_sample_adjust_qty = items.reduce((sum, item) => sum + Number(item.total_sample_adjust_qty || 0), 0);
+          const total_store_delivery = items.reduce((sum, item) => sum + Number(item.total_store_delivery || 0), 0);
+          const total_dyeing_order_qty = items.reduce((sum, item) => sum + Number(item.dyeing_order_qty || 0), 0);
 
-    res.send(result);
+          return {
+            factory_name,
+            total_production_qty,
+            total_sample_adjust_qty,
+            total_store_delivery,
+            total_dyeing_order_qty,
+            dyeing_sections: items.sort((a, b) => a.section_name?.localeCompare(b.section_name)),
+          };
+        }),
+      })),
+    })).sort((a, b) => a.marketing_name.localeCompare(b.marketing_name));
+
+    res.json(result);
 
   } catch (error) {
     console.error('Error fetching PI summary:', error);
