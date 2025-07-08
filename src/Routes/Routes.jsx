@@ -9,6 +9,7 @@ import PiSummary from '../Dashboard/Pages/PiSummary.jsx';
 import AddRawIssue from '../Dashboard/Pages/rawIssue/AddRawIssue.jsx';
 import AddNewSample from '../Dashboard/Pages/Sample/AddNewSample.jsx';
 import AllSamples from '../Dashboard/Pages/Sample/AllSamples.jsx';
+import SampleOrders from '../Dashboard/Pages/Sample/SampleOrders.jsx';
 const Routes = createBrowserRouter([
     {
         path: "/",
@@ -53,7 +54,11 @@ const Routes = createBrowserRouter([
             {
                 path: "/dashboard/samples",
                 element: <AllSamples />,
-            }
+            },
+            {
+                path: "/dashboard/all-samples",
+                element: <SampleOrders />,
+            },
         ]
     },
 

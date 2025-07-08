@@ -63,9 +63,9 @@ const AddNewSample = () => {
         axiosSecure
             .post("/new-sample", formData)
             .then((res) => {
-                // if (response.data) {
-                //     toast.success("New Dyeing Order Added Successfully");
-                // }
+                if (res.data) {
+                    toast.success("New Dyeing Order Added Successfully");
+                }
                 console.log(res);
             })
             .catch((error) => {

@@ -64,7 +64,8 @@ userSampleRouters.post('/new-sample', async (req, res) => {
             month_name,
             currentMonth,
             color_name,
-            created_at: new Date()
+            created_at: new Date(),
+            received_cols: [],
         };
 
         await classUserServices.insertToTheDatabase(newSampleData, 'sample_orders');
@@ -148,7 +149,8 @@ userSampleRouters.get('/samples', async (req, res) => {
 
         res.send({
             marketingWiseSamples,
-            factoryWiseSamples
+            factoryWiseSamples,
+            sampleOrders
         });
     } catch (error) {
         console.error('Error fetching samples:', error);
