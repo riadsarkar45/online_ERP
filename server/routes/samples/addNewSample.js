@@ -168,7 +168,7 @@ userSampleRouters.post('/update-sample/:dyeing_order', async (req, res) => {
     const dyeingOrder = req.params.dyeing_order;
     console.log(dyeingOrder);
     if (!Array.isArray(input) || input.length === 0) {
-        return res.status(400).json({ message: 'Invalid input format' });
+        return res.send({ message: 'Invalid input format' });
     }
 
     const sampleOrders = await classUserServices.fetchData('sample_orders');
@@ -201,14 +201,21 @@ userSampleRouters.post('/update-sample/:dyeing_order', async (req, res) => {
 
         results.push(matches);
     }
-    // if (results) {
-    //     await classUserServices.updateData(
-    //         { dyeing_order: checkData.dyeing_order },
-    //         { $inc: { [currentStatus.dyeingField]: qty } },
-    //         'dyeing_orders'
-    //     );
-    // }
-    console.log(results);
+
+    const existingOrder = await classUserServices.findDataIfExist(
+        'sample_orders',
+        { dyeing_order: dyeingOrder }
+    );
+    console.log(existingOrder);
+    if (results && existingOrder) {
+        const flatResult = input.flat();
+        console.log(flatResult, 'line 212');
+        await classUserServices.updateData(
+            { dyeing_order: dyeingOrder },
+            { $push: { received_cols: { $each: flatResult } } },
+            'sample_orders'
+        );
+    }
     res.json({
         status: 'success',
         data: results

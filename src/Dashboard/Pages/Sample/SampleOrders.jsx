@@ -8,14 +8,11 @@ const SampleOrders = () => {
     const AxiosSecure = useAxiosSecure();
     const [colorObjects, setColorObjects] = useState([]);
     const { theme } = useThemeMode();
-    const [dyeing_order, setDyeing_order] = useState()
-
     const { refetch } = useQuery({
         queryKey: ["posts"],
         queryFn: async () => {
             try {
                 const res = await AxiosSecure.get('/samples');
-                console.log(res.data?.sampleOrders);
                 setSamples(res.data?.sampleOrders)
                 return res.data;
             } catch (error) {
@@ -24,7 +21,7 @@ const SampleOrders = () => {
             }
         },
     })
-    const handleChange = (dyeing_order, value) => {
+    const handleChange = (value) => {
         const colors = value.split(',').map(c => c.trim()).filter(c => c);
         const today = new Date().toISOString().split("T")[0];
 
@@ -33,15 +30,15 @@ const SampleOrders = () => {
             color,
         }));
 
-        console.log(dyeing_order);
         setColorObjects(colorArrayWithDate);
-        setDyeing_order(dyeing_order)
     };
-    console.log(colorObjects);
-    const handleUpdateSample = async () => {
+
+    const handleUpdateSample = async (dyeing_orders) => {
+        console.log(dyeing_orders);
         try {
-            const res = await AxiosSecure.post(`/update-sample/${dyeing_order}`, colorObjects);
+            const res = await AxiosSecure.post(`/update-sample/${String(dyeing_orders)}`, colorObjects);
             console.log(res);
+            refetch();
         } catch (e) {
             console.log(e);
         }
@@ -104,17 +101,28 @@ const SampleOrders = () => {
                                     placeholder="Received Color Names"
                                     className="outline-none p-2"
                                     onChange={(e) => handleChange(items?.dyeing_order, e.target.value)}
-                                />                               <select className="outline-none p-2" name="" id="">
+                                />
+                                <select className="outline-none p-2" name="" id="">
                                     <option>Store Delivery</option>
                                 </select>
-                                <button onClick={() => handleUpdateSample()} className="outline-none bg-gray-300 p-2 border border-r-0">Save Changes</button>
+                                <button onClick={() => handleUpdateSample(items?.dyeing_order)} className="outline-none bg-gray-300 p-2 border border-r-0">Save Changes</button>
                                 <button className="outline-none bg-gray-300 rounded-r-md p-2 border">See Detail</button>
                             </div>
 
                             {
                                 items?.received_cols?.length === 0 ? (
                                     <h2>No status to show</h2>
-                                ) : null
+                                ) : (
+
+                                    items?.received_cols?.map((cols, index) =>
+                                        <div className="flex gap-2" key={index}>
+                                            <h2><span>Received Colors → {cols?.color}</span></h2>
+                                            <span>→</span>
+                                            <h2><span>Received Date → {cols?.date}</span></h2>
+                                        </div>
+                                    )
+
+                                )
 
                             }
 
