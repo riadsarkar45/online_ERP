@@ -1,5 +1,6 @@
 const express = require('express');
 const User_Services = require('../../controllers/user_services');
+const { default: analyzeColorDelivery } = require('../../functions/functions');
 const userSampleRouters = express.Router();
 const classUserServices = new User_Services();
 
@@ -25,7 +26,6 @@ userSampleRouters.post('/new-sample', async (req, res) => {
                 type: 'error',
             });
         }
-
         const {
             dyeing_order,
             sectionName,
@@ -36,7 +36,8 @@ userSampleRouters.post('/new-sample', async (req, res) => {
             dyeing_order_qty,
             month_name,
             currentMonth,
-            color_name
+            color_name,
+
         } = req.body;
 
         const trimmedOrder = dyeing_order.trim();
@@ -66,6 +67,7 @@ userSampleRouters.post('/new-sample', async (req, res) => {
             color_name,
             created_at: new Date(),
             received_cols: [],
+            status: ''
         };
 
         await classUserServices.insertToTheDatabase(newSampleData, 'sample_orders');
@@ -157,6 +159,63 @@ userSampleRouters.get('/samples', async (req, res) => {
         res.status(500).send({ message: 'Internal server error', error });
     }
 });
+
+
+
+userSampleRouters.post('/update-sample/:dyeing_order', async (req, res) => {
+    const input = req.body;
+    console.log(req.body);
+    const dyeingOrder = req.params.dyeing_order;
+    console.log(dyeingOrder);
+    if (!Array.isArray(input) || input.length === 0) {
+        return res.status(400).json({ message: 'Invalid input format' });
+    }
+
+    const sampleOrders = await classUserServices.fetchData('sample_orders');
+
+    // Group received colors by month (yyyy-mm)
+    const groupedByMonth = input.reduce((acc, item) => {
+        const monthKey = item.date?.slice(0, 7); // e.g., "2025-07"
+        if (!acc[monthKey]) acc[monthKey] = [];
+        acc[monthKey].push(item.color);
+        return acc;
+    }, {});
+
+    const results = [];
+
+    for (const month in groupedByMonth) {
+        const matchingRecord = sampleOrders.find(order => order.currentMonth === month);
+
+        if (!matchingRecord) {
+            results.push({
+                month,
+                error: 'No matching record found in DB for this month'
+            });
+            continue;
+        }
+
+        const received = groupedByMonth[month];
+        const expected = matchingRecord.color_name;
+
+        const { matches } = analyzeColorDelivery(expected, received);
+
+        results.push(matches);
+    }
+    // if (results) {
+    //     await classUserServices.updateData(
+    //         { dyeing_order: checkData.dyeing_order },
+    //         { $inc: { [currentStatus.dyeingField]: qty } },
+    //         'dyeing_orders'
+    //     );
+    // }
+    console.log(results);
+    res.json({
+        status: 'success',
+        data: results
+    });
+});
+
+
 
 
 

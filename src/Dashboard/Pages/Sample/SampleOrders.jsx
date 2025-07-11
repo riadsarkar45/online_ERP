@@ -1,10 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../Hooks/AxiosSecure";
 import { useState } from "react";
+import { useThemeMode } from "../../Hooks/Theme";
 
 const SampleOrders = () => {
     const [samples, setSamples] = useState([])
     const AxiosSecure = useAxiosSecure();
+    const [colorObjects, setColorObjects] = useState([]);
+    const { theme } = useThemeMode();
+    const [dyeing_order, setDyeing_order] = useState()
 
     const { refetch } = useQuery({
         queryKey: ["posts"],
@@ -20,9 +24,35 @@ const SampleOrders = () => {
             }
         },
     })
+    const handleChange = (dyeing_order, value) => {
+        const colors = value.split(',').map(c => c.trim()).filter(c => c);
+        const today = new Date().toISOString().split("T")[0];
+
+        const colorArrayWithDate = colors.map(color => ({
+            date: today,
+            color,
+        }));
+
+        console.log(dyeing_order);
+        setColorObjects(colorArrayWithDate);
+        setDyeing_order(dyeing_order)
+    };
+    console.log(colorObjects);
+    const handleUpdateSample = async () => {
+        try {
+            const res = await AxiosSecure.post(`/update-sample/${dyeing_order}`, colorObjects);
+            console.log(res);
+        } catch (e) {
+            console.log(e);
+        }
+
+    }
     return (
         <div>
-            <div>
+            <div className={`${theme === "dark"
+                ? "bg-gray-700 text-red-200"
+                : "bg-white text-black"
+                } p-2`}>
                 {
                     samples?.map((items, k) =>
                         <div key={k} className="border mb-2 p-2 rounded-md">
@@ -57,25 +87,36 @@ const SampleOrders = () => {
                                 Date → {items?.created_at}
                             </h2>
 
-                            <div className="flex mb-2 gap-2 ">
+                            <div className="flex mb-3 gap-2 ">
                                 <h2>
-                                    Colors → 
+                                    Colors →
                                 </h2>
                                 {
-                                    items?.color_name?.map((colors, i) => 
+                                    items?.color_name?.map((colors, i) =>
                                         <span key={i} className="bg-gray-300 p-1 rounded-sm text-black text-sm">{colors}</span>
                                     )
                                 }
                             </div>
 
-                            <div className="text-black flex">
-                                <input className="outline-none p-2" type="text" placeholder="Received Color Names"/>
-                                <select className="outline-none p-2" name="" id="">
+                            <div className="text-black flex mb-4">
+                                <input
+                                    type="text"
+                                    placeholder="Received Color Names"
+                                    className="outline-none p-2"
+                                    onChange={(e) => handleChange(items?.dyeing_order, e.target.value)}
+                                />                               <select className="outline-none p-2" name="" id="">
                                     <option>Store Delivery</option>
                                 </select>
-                                <button className="outline-none bg-gray-300 p-2 border border-r-0">Submit</button>
+                                <button onClick={() => handleUpdateSample()} className="outline-none bg-gray-300 p-2 border border-r-0">Save Changes</button>
                                 <button className="outline-none bg-gray-300 rounded-r-md p-2 border">See Detail</button>
                             </div>
+
+                            {
+                                items?.received_cols?.length === 0 ? (
+                                    <h2>No status to show</h2>
+                                ) : null
+
+                            }
 
                         </div>
                     )
