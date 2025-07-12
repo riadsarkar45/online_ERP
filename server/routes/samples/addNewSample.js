@@ -160,13 +160,33 @@ userSampleRouters.get('/samples', async (req, res) => {
     }
 });
 
+userSampleRouters.post('/sample-status/:status/:dyeing_order', async (req, res) => {
+    const status = req.params.status;
+    const dyeing_order = req.params.dyeing_order;
+    console.log(status, dyeing_order, 'line 166');
+
+    if (status === 'sample-adjust') {
+        await classUserServices.updateData(
+            { dyeing_order: dyeing_order },
+            { $set: { status: 'Adjust Qty' } },
+            'sample_orders'
+        );
+
+        return res.send({ message: 'Status updated to Adjust Qty', type: 'success' });
+    }
+
+    // Optional: handle unknown status
+    return res.status(400).send({ message: 'Invalid status', type: 'error' });
+});
+
+
 
 
 userSampleRouters.post('/update-sample/:dyeing_order', async (req, res) => {
     const input = req.body;
-    console.log(req.body);
     const dyeingOrder = req.params.dyeing_order;
-    console.log(dyeingOrder);
+
+
     if (!Array.isArray(input) || input.length === 0) {
         return res.send({ message: 'Invalid input format' });
     }
@@ -182,6 +202,8 @@ userSampleRouters.post('/update-sample/:dyeing_order', async (req, res) => {
     }, {});
 
     const results = [];
+
+
 
     for (const month in groupedByMonth) {
         const matchingRecord = sampleOrders.find(order => order.currentMonth === month);

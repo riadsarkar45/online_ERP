@@ -123,13 +123,18 @@ const AllSamples = () => {
                                         <p>Total Dyeing Order Qty: {section.total_dyeing_order_qty}</p>
                                     </div>
 
-                                    <div className={`${marketingName === items.marketing_name ? '' : 'hidden'} ml-4 mt-2`}>
+                                    <div className={`${marketingName === items.marketing_name ? '' : 'hidden'}`}>
                                         {section?.orders?.map((order, k) => (
-                                            <div key={k} className="text-sm grid grid-cols-4 w-[58rem]">
+                                            <div key={k} className={`${order?.status === 'Adjust Qty' ? 'bg-red-500 bg-opacity-30 grid-cols-5 border border-opacity-40 border-red-300': 'grid-cols-4'} text-sm grid  gap-4 p-1`}>
                                                 <p>→ Order: {order.dyeing_order}</p>
                                                 <p>→ Factory Name: {order.factory_name}</p>
                                                 <p>→ Month: {order.month_name}</p>
                                                 <p>Qty: {order.dyeing_order_qty}</p>
+                                                <p>
+                                                    {
+                                                        order?.status === 'Adjust Qty' && 'Adjusted'
+                                                    }
+                                                </p>
                                             </div>
                                         ))}
                                     </div>

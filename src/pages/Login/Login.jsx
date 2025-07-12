@@ -4,7 +4,7 @@ import { Link } from "react-router";
 const Login = () => {
     return (
         <div className="w-[30rem] m-auto mt-20 bg-white h-[20rem] p-4 border-1">
-            <Link to='/dashboard'>Dashboard</Link>
+            <Link to='/dashboard'>Dashboard Please don't make any Changes</Link>
             <h2 className="mb-[2rem] text-3xl font-bold underline text-red-500">Login</h2>
             <div className="mb-4">
 

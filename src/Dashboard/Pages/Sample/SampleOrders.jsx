@@ -33,10 +33,19 @@ const SampleOrders = () => {
         setColorObjects(colorArrayWithDate);
     };
 
-    const handleUpdateSample = async (dyeing_orders) => {
-        console.log(dyeing_orders);
+    const handleStatus = async (dyeingOrder, status) => {
         try {
-            const res = await AxiosSecure.post(`/update-sample/${String(dyeing_orders)}`, colorObjects);
+            const res = await AxiosSecure.post(`/sample-status/${status}/${dyeingOrder}`);
+            console.log(res);
+            refetch();
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    const handleUpdateSample = async (dyeing_orders) => {
+        try {
+            const res = await AxiosSecure.post(`/update-sample/${dyeing_orders}`, colorObjects);
             console.log(res);
             refetch();
         } catch (e) {
@@ -44,6 +53,7 @@ const SampleOrders = () => {
         }
 
     }
+    console.log(colorObjects, 'color objects');
     return (
         <div>
             <div className={`${theme === "dark"
@@ -54,7 +64,7 @@ const SampleOrders = () => {
                     samples?.map((items, k) =>
                         <div key={k} className="border mb-2 p-2 rounded-md">
 
-                            <div className="flex justify-between border-b p-2 h-[2.9rem] mb-3">
+                            <div className="flex justify-between items-center border-b p-2 h-[2.9rem] mb-3 ">
                                 <h2>
                                     → {items?.dyeing_order}
                                 </h2>
@@ -67,6 +77,11 @@ const SampleOrders = () => {
                                 <h2>
                                     Factory → {items?.factory_name}
                                 </h2>
+                                <span>
+                                    <button onClick={() => handleStatus(items?.dyeing_order, 'sample-adjust')} className={`${items?.status === 'Adjust Qty' ? 'bg-green-500 bg-opacity-20 disable cursor-not-allowed border-green-500 border text-green-500' : 'bg-red-500 bg-opacity-20 border-red-500 border text-red-500'} p-1 rounded-md `}>
+                                        {items?.status === 'Adjust Qty' ? 'Adjusted' : 'Adjust'}
+                                    </button>
+                                </span>
                             </div>
 
                             <div className="flex justify-between border-b h-[2.6rem]">
@@ -100,9 +115,10 @@ const SampleOrders = () => {
                                     type="text"
                                     placeholder="Received Color Names"
                                     className="outline-none p-2"
-                                    onChange={(e) => handleChange(items?.dyeing_order, e.target.value)}
+                                    onChange={(e) => handleChange(e.target.value)}
                                 />
                                 <select className="outline-none p-2" name="" id="">
+                                    <option>Select Status</option>
                                     <option>Store Delivery</option>
                                 </select>
                                 <button onClick={() => handleUpdateSample(items?.dyeing_order)} className="outline-none bg-gray-300 p-2 border border-r-0">Save Changes</button>
@@ -115,7 +131,8 @@ const SampleOrders = () => {
                                 ) : (
 
                                     items?.received_cols?.map((cols, index) =>
-                                        <div className="flex gap-2" key={index}>
+                                        <div className="flex gap-2 items-center" key={index}>
+                                            <span>→</span>
                                             <h2><span>Received Colors → {cols?.color}</span></h2>
                                             <span>→</span>
                                             <h2><span>Received Date → {cols?.date}</span></h2>

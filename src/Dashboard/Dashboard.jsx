@@ -80,6 +80,12 @@ const Dashboard = () => {
                                     >
                                         Add Sample Order
                                     </Link>
+                                    <Link
+                                        to="/dashboard/all-samples"
+                                        className="block px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700"
+                                    >
+                                        All Samples
+                                    </Link>
                                 </li>
                                 <li>
                                     <Link
