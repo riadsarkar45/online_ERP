@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import useAxiosSecure from '../../Hooks/AxiosSecure';
 import { useThemeMode } from '../../Hooks/Theme';
+import FinalSummary from './FinalSummary';
 
 const AllSamples = () => {
     const [samples, setSamples] = useState([])
@@ -102,7 +103,7 @@ const AllSamples = () => {
                 </div>
 
             </div>
-
+            <FinalSummary />
             <div className=''>
                 {
                     factoryWise === 'marketing_wise' &&
@@ -125,7 +126,7 @@ const AllSamples = () => {
 
                                     <div className={`${marketingName === items.marketing_name ? '' : 'hidden'}`}>
                                         {section?.orders?.map((order, k) => (
-                                            <div key={k} className={`${order?.status === 'Adjust Qty' ? 'bg-red-500 bg-opacity-30 grid-cols-5 border border-opacity-40 border-red-300': 'grid-cols-4'} text-sm grid  gap-4 p-1`}>
+                                            <div key={k} className={`${order?.status === 'Adjust Qty' ? 'bg-red-500 bg-opacity-30 grid-cols-5 border border-opacity-40 border-red-300' : 'grid-cols-4'} text-sm grid  gap-4 p-1`}>
                                                 <p>→ Order: {order.dyeing_order}</p>
                                                 <p>→ Factory Name: {order.factory_name}</p>
                                                 <p>→ Month: {order.month_name}</p>

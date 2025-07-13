@@ -67,7 +67,8 @@ userSampleRouters.post('/new-sample', async (req, res) => {
             color_name,
             created_at: new Date(),
             received_cols: [],
-            status: ''
+            status: '',
+            delivered: '',
         };
 
         await classUserServices.insertToTheDatabase(newSampleData, 'sample_orders');
@@ -137,6 +138,22 @@ userSampleRouters.get('/samples', async (req, res) => {
             return Object.values(sectionMap).sort((a, b) => a.yarn_type.localeCompare(b.yarn_type));
         };
 
+        for (const sample of sampleOrders) {
+            if (sample.color_name.length === sample.received_cols.length) {
+                await classUserServices.updateData(
+                    { dyeing_order: sample.dyeing_order },
+                    { $set: { delivered: 'Sample Received' } },
+                    'sample_orders'
+                );
+            } else {
+                await classUserServices.updateData(
+                    { dyeing_order: sample.dyeing_order },
+                    { $set: { delivered: ' ' } },
+                    'sample_orders'
+                );
+            }
+        }
+
         const marketingGroups = groupBy(filtered, item => item.marketing_name?.trim());
         const marketingWiseSamples = Object.entries(marketingGroups).map(([marketing_name, items]) => ({
             marketing_name,
@@ -178,7 +195,6 @@ userSampleRouters.post('/sample-status/:status/:dyeing_order', async (req, res) 
     // Optional: handle unknown status
     return res.status(400).send({ message: 'Invalid status', type: 'error' });
 });
-
 
 
 
@@ -231,18 +247,72 @@ userSampleRouters.post('/update-sample/:dyeing_order', async (req, res) => {
     console.log(existingOrder);
     if (results && existingOrder) {
         const flatResult = input.flat();
-        console.log(flatResult, 'line 212');
         await classUserServices.updateData(
             { dyeing_order: dyeingOrder },
             { $push: { received_cols: { $each: flatResult } } },
             'sample_orders'
         );
+
+
+
     }
     res.json({
         status: 'success',
         data: results
     });
 });
+
+userSampleRouters.get('/final-summary', async (req, res) => {
+    try {
+        const samples = await classUserServices.fetchData('sample_orders');
+
+        let totalDyeingQty = 0;
+        let totalAdjustQty = 0;
+        let storeDelivery = 0;
+        let adjustBalance = 0;
+        let deliveryBalance = 0;
+
+        for (const sample of samples) {
+            totalDyeingQty += parseInt(sample.dyeing_order_qty) || 0;
+
+            if (sample.status === "Adjust Qty") {
+                totalAdjustQty += sample.dyeing_order_qty ? parseInt(sample.dyeing_order_qty) : 0;
+            }
+            if (sample.delivered === "Sample Received") {
+                storeDelivery += sample.dyeing_order_qty ? parseInt(sample.dyeing_order_qty) : 0;
+            }
+            if (sample.status === "Not Adjusted" || sample.status === "") {
+                adjustBalance += sample.dyeing_order_qty ? parseInt(sample.dyeing_order_qty) : 0;
+            }
+            if (sample.delivered === " ") {
+                deliveryBalance += sample.dyeing_order_qty ? parseInt(sample.dyeing_order_qty) : 0;
+            }
+
+            if (sample.color_name.length === sample.received_cols.length) {
+                await classUserServices.updateData(
+                    { dyeing_order: sample.dyeing_order },
+                    { $set: { delivered: 'Sample Received' } },
+                    'sample_orders'
+                );
+            } else {
+                await classUserServices.updateData(
+                    { dyeing_order: sample.dyeing_order },
+                    { $set: { delivered: ' ' } },
+                    'sample_orders'
+                );
+            }
+        }
+
+        res.send({ totalDyeingQty, totalAdjustQty, adjustBalance, storeDelivery, deliveryBalance });
+    } catch (error) {
+        console.error('Error in /final-summary:', error);
+        res.status(500).send({ message: 'Internal server error', error });
+    }
+});
+
+
+
+
 
 
 

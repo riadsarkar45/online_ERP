@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../Hooks/AxiosSecure";
 import { useState } from "react";
 import { useThemeMode } from "../../Hooks/Theme";
+import FinalSummary from "./FinalSummary";
 
 const SampleOrders = () => {
     const [samples, setSamples] = useState([])
@@ -56,10 +57,13 @@ const SampleOrders = () => {
     console.log(colorObjects, 'color objects');
     return (
         <div>
+
             <div className={`${theme === "dark"
                 ? "bg-gray-700 text-red-200"
                 : "bg-white text-black"
                 } p-2`}>
+                <FinalSummary />
+
                 {
                     samples?.map((items, k) =>
                         <div key={k} className="border mb-2 p-2 rounded-md">
