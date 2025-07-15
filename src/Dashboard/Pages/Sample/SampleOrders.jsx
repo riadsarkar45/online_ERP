@@ -8,7 +8,10 @@ const SampleOrders = () => {
     const [samples, setSamples] = useState([])
     const AxiosSecure = useAxiosSecure();
     const [colorObjects, setColorObjects] = useState([]);
+    const [showDetail, setShowDetail] = useState(false);
+    const [isShowDetail, setIsShowDetail] = useState(false);
     const { theme } = useThemeMode();
+
     const { refetch } = useQuery({
         queryKey: ["posts"],
         queryFn: async () => {
@@ -46,15 +49,18 @@ const SampleOrders = () => {
 
     const handleUpdateSample = async (dyeing_orders) => {
         try {
-            const res = await AxiosSecure.post(`/update-sample/${dyeing_orders}`, colorObjects);
-            console.log(res);
+            await AxiosSecure.post(`/update-sample/${dyeing_orders}`, colorObjects);
             refetch();
         } catch (e) {
             console.log(e);
         }
 
     }
-    console.log(colorObjects, 'color objects');
+
+    const handleShowDetail = (dyeingOrder) => {
+        setShowDetail(dyeingOrder)
+        setIsShowDetail(!isShowDetail);
+    }
     return (
         <div>
 
@@ -99,9 +105,26 @@ const SampleOrders = () => {
                                     Yarn Type → {items?.yarn_type}
                                 </h2>
                             </div>
-                            <h2 className="mb-3 border-b p-2">
-                                Date → {items?.created_at}
-                            </h2>
+                            <div className="flex border-b p-2 gap-3 items-center mt-3 mb-3">
+                                <h2 className="mb-3">
+                                    Date → {items?.created_at}
+                                </h2>
+                                <h2 className={` mb-3 `}>
+                                    <span
+                                        className={`
+                                            ${items?.delivered === 'Sample Received' ? 'bg-green-500 bg-opacity-25 border p-1 text-sm rounded-md border-green-500 text-green-600' : ''}
+                                            ${items?.received_cols?.length < items?.color_name?.length ? 'bg-red-500 border-red-500 border text-red-500 bg-opacity-25 px-2 py-1 rounded' : ''}
+                                        `}
+                                    >
+                                        {items?.delivered}
+                                        {items?.received_cols?.length < items?.color_name?.length && (
+                                            <span className="ml-2">
+                                              {items?.color_name?.length} / ({items?.color_name?.length - items?.received_cols?.length} Colors not delivered)
+                                            </span>
+                                        )}
+                                    </span>
+                                </h2>
+                            </div>
 
                             <div className="flex mb-3 gap-2 ">
                                 <h2>
@@ -118,31 +141,29 @@ const SampleOrders = () => {
                                 <input
                                     type="text"
                                     placeholder="Received Color Names"
-                                    className="outline-none p-2"
+                                    className="outline-none p-1 bg-opacity-25"
                                     onChange={(e) => handleChange(e.target.value)}
                                 />
-                                <select className="outline-none p-2" name="" id="">
-                                    <option>Select Status</option>
-                                    <option>Store Delivery</option>
-                                </select>
-                                <button onClick={() => handleUpdateSample(items?.dyeing_order)} className="outline-none bg-gray-300 p-2 border border-r-0">Save Changes</button>
-                                <button className="outline-none bg-gray-300 rounded-r-md p-2 border">See Detail</button>
+                                <button onClick={() => handleUpdateSample(items?.dyeing_order)} className="outline-none bg-gray-300 bg-opacity-25 p-1 border border-r-0">Save Changes</button>
+                                <button onClick={() => handleShowDetail(items?.dyeing_order)} className="outline-none bg-gray-300 bg-opacity-25 rounded-r-md p-1 border">See Detail</button>
                             </div>
 
                             {
-                                items?.received_cols?.length === 0 ? (
-                                    <h2>No status to show</h2>
-                                ) : (
+                                 isShowDetail || showDetail === items?.dyeing_order  && (
+                                    items?.received_cols?.length === 0 ? (
+                                        <h2>No status to show</h2>
+                                    ) : (
 
-                                    items?.received_cols?.map((cols, index) =>
-                                        <div className="flex gap-2 items-center" key={index}>
-                                            <span>→</span>
-                                            <h2><span>Received Colors → {cols?.color}</span></h2>
-                                            <span>→</span>
-                                            <h2><span>Received Date → {cols?.date}</span></h2>
-                                        </div>
+                                        items?.received_cols?.map((cols, index) =>
+                                            <div className="flex gap-2 items-center" key={index}>
+                                                <span>→</span>
+                                                <h2><span>Received Colors → {cols?.color}</span></h2>
+                                                <span>→</span>
+                                                <h2><span>Received Date → {cols?.date}</span></h2>
+                                            </div>
+                                        )
+
                                     )
-
                                 )
 
                             }

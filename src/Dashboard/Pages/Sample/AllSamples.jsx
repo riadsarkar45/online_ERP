@@ -16,6 +16,7 @@ const AllSamples = () => {
     });
     const [isShowFilter, setIsShowFilter] = useState()
     const [factoryWise, setFactoryWise] = useState('marketing_wise')
+    const [isShowDetail, setIsShowDetail] = useState(false);
 
     const { refetch } = useQuery({
         queryKey: ["posts"],
@@ -23,7 +24,6 @@ const AllSamples = () => {
             try {
                 const res = await AxiosSecure.get('/samples', { params: filter });
                 setSamples(res?.data)
-                console.log(res.data?.factoryWiseSamples);
                 return res.data;
             } catch (error) {
                 console.error("Error fetching posts:", error);
@@ -33,12 +33,21 @@ const AllSamples = () => {
     })
     const handleShowDetail = (marketingName) => {
         setMarketing_name(marketingName,)
-        console.log(marketingName);
+        setIsShowDetail(!isShowDetail);
 
     };
-
     const handleShowFilters = () => {
         setIsShowFilter(!isShowFilter)
+    }
+
+    const handleStatus = async (dyeingOrder, status) => {
+        try {
+            const res = await AxiosSecure.post(`/sample-status/${status}/${dyeingOrder}`);
+            console.log(res);
+            refetch();
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     const handleFactoryWise = (type) => {
@@ -112,7 +121,7 @@ const AllSamples = () => {
                             <div className='flex justify-between'>
                                 <h2 className="text-lg font-bold">{items.marketing_name}</h2>
                                 <button onClick={() => handleShowDetail(items.marketing_name)}>
-                                    +
+                                    {isShowDetail && marketingName === items.marketing_name ? '-' : '+'}
                                 </button>
                             </div>
 
@@ -124,20 +133,26 @@ const AllSamples = () => {
                                         <p>Total Dyeing Order Qty: {section.total_dyeing_order_qty}</p>
                                     </div>
 
-                                    <div className={`${marketingName === items.marketing_name ? '' : 'hidden'}`}>
-                                        {section?.orders?.map((order, k) => (
-                                            <div key={k} className={`${order?.status === 'Adjust Qty' ? 'bg-red-500 bg-opacity-30 grid-cols-5 border border-opacity-40 border-red-300' : 'grid-cols-4'} text-sm grid  gap-4 p-1`}>
-                                                <p>→ Order: {order.dyeing_order}</p>
-                                                <p>→ Factory Name: {order.factory_name}</p>
-                                                <p>→ Month: {order.month_name}</p>
-                                                <p>Qty: {order.dyeing_order_qty}</p>
-                                                <p>
-                                                    {
-                                                        order?.status === 'Adjust Qty' && 'Adjusted'
-                                                    }
-                                                </p>
-                                            </div>
-                                        ))}
+                                    <div >
+                                        {
+                                            isShowDetail || marketingName === items.marketing_name && (
+                                                section?.orders?.map((order, k) => (
+                                                    <div key={k} className={`${order?.status === 'Adjust Qty' ? 'bg-green-500 bg-opacity-30 grid-cols-5 border text-green-600 font-semibold border-opacity-40 items-center border-green-300 grid' : 'bg-red-500 bg-opacity-30 flex items-center justify-between text-red-600 font-semibold border border-opacity-40 border-red-300'} text-sm  gap-4 p-1`}>
+                                                        <p>→ Order: {order.dyeing_order}</p>
+                                                        <p>→ Factory Name: {order.factory_name}</p>
+                                                        <p>→ Month: {order.month_name}</p>
+                                                        <p>Qty: {order.dyeing_order_qty}</p>
+                                                        <p>
+                                                            {
+                                                                order?.status === 'Adjust Qty' ? 'Adjusted' : <button onClick={() => handleStatus(order?.dyeing_order, 'sample-adjust')} className={`${items?.status === 'Adjust Qty' ? 'bg-green-500 bg-opacity-20 disable cursor-not-allowed border-green-500 border text-green-500' : 'bg-red-500 bg-opacity-20 border-red-500 border text-red-500'} p-1 rounded-md `}>
+                                                                    {items?.status === 'Adjust Qty' ? 'Adjusted' : 'Adjust'}
+                                                                </button>
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                ))
+                                            )
+                                        }
                                     </div>
                                 </div>
                             ))}
@@ -153,7 +168,8 @@ const AllSamples = () => {
                             <div className='flex justify-between'>
                                 <h2 className="text-lg font-bold">{sam.factory_name}</h2>
                                 <button onClick={() => handleShowDetail(sam.factory_name)}>
-                                    +
+                                    {isShowDetail && marketingName === sam.factory_name ? '-' : '+'}
+
                                 </button>
                             </div>
 
@@ -166,15 +182,28 @@ const AllSamples = () => {
                                     </div>
 
                                     <div className={`${marketingName === sam.factory_name ? '' : 'hidden'} ml-4 mt-2`}>
-                                        {section?.orders?.map((order, k) => (
-                                            <div key={k} className="text-sm grid grid-cols-4 w-[58rem]">
-                                                <p>→ Order: {order.dyeing_order}</p>
-                                                <p>→ Factory Name: {order.factory_name}</p>
-                                                <p>→ Month: {order.month_name}</p>
-                                                <p>Qty: {order.dyeing_order_qty}</p>
+                                        {
 
-                                            </div>
-                                        ))}
+                                            isShowDetail && marketingName === sam.factory_name && (
+                                                section?.orders?.map((order, k) => (
+                                                    <div key={k} className={`${order?.status === 'Adjust Qty' ? 'bg-green-500 rounded-sm bg-opacity-30 flex justify-between border text-green-600 font-semibold border-opacity-40 border-green-300' : 'bg-red-500 rounded-sm bg-opacity-30 flex justify-between text-red-600 items-center font-semibold border border-opacity-40 border-red-300'} text-sm  gap-4 p-1`}>
+                                                        <p>→ Order: {order.dyeing_order}</p>
+                                                        <p>→ Factory Name: {order.factory_name}</p>
+                                                        <p>→ Month: {order.month_name}</p>
+                                                        <p>Qty: {order.dyeing_order_qty}</p>
+                                                        <p>
+                                                            {
+                                                                order?.status === 'Adjust Qty' ? 'Adjusted' : <button onClick={() => handleStatus(order?.dyeing_order, 'sample-adjust')} className={`${order?.status === 'Adjust Qty' ? 'bg-green-500 bg-opacity-20 disable cursor-not-allowed border-green-500 border text-green-500' : 'bg-red-500 bg-opacity-20 items-center border-red-500 border text-red-500'} p-1 rounded-md `}>
+                                                                    {order?.status === 'Adjust Qty' ? 'Adjusted' : 'Adjust'}
+                                                                </button>
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                ))
+                                            )
+
+
+                                        }
                                     </div>
                                 </div>
                             ))}
