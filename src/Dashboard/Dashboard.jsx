@@ -2,9 +2,12 @@ import { useRef, useState } from "react";
 import { Link, Outlet } from "react-router";
 import { useThemeMode } from "./Hooks/Theme";
 import { Toaster } from "react-hot-toast";
+import UserRole from "./Hooks/UserRole";
 
 const Dashboard = () => {
     const { theme, toggleTheme, resetTheme, hideSidebarAndHeader } = useThemeMode();
+    const [usersRole] = UserRole();
+    console.log(usersRole);
     const popupRef = useRef();
     const [popUp, setPopUp] = useState(false);
     const changeTheme = () => {

@@ -2,8 +2,10 @@ const express = require('express');
 const issueRoutes = express.Router();
 const User_Services = require('../controllers/user_services');
 const classUserServices = new User_Services();
+const verifyToken = require('../services/auth');
+const getUserRole = require('../services/auth');
 
-issueRoutes.get('/raw-issue', async (req, res) => {
+issueRoutes.get('/raw-issue', verifyToken, getUserRole, async (req, res) => {
     try {
         const raw_yarn_balance = await classUserServices.fetchData('raw-yarn-balance')
         if (raw_yarn_balance.length === 0) return res.send({ message: "No raw issue data found" });
@@ -15,7 +17,7 @@ issueRoutes.get('/raw-issue', async (req, res) => {
     }
 })
 
-issueRoutes.post('/update-raw-yarn', async (req, res) => {
+issueRoutes.post('/update-raw-yarn', verifyToken, getUserRole, async (req, res) => {
     try {
         const {
             order_no,

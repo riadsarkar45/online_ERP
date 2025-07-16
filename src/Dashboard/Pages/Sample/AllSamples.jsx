@@ -3,12 +3,14 @@ import React, { useState } from 'react';
 import useAxiosSecure from '../../Hooks/AxiosSecure';
 import { useThemeMode } from '../../Hooks/Theme';
 import FinalSummary from './FinalSummary';
+import UserRole from '../../Hooks/UserRole';
 
 const AllSamples = () => {
     const [samples, setSamples] = useState([])
     const [marketingName, setMarketing_name] = useState('')
     const AxiosSecure = useAxiosSecure();
     const { theme } = useThemeMode();
+    const [usersRole] = UserRole();
     const [filter, setFilter] = useState({
         month: '',
         year: '',
@@ -144,7 +146,7 @@ const AllSamples = () => {
                                                         <p>Qty: {order.dyeing_order_qty}</p>
                                                         <p>
                                                             {
-                                                                order?.status === 'Adjust Qty' ? 'Adjusted' : <button onClick={() => handleStatus(order?.dyeing_order, 'sample-adjust')} className={`${items?.status === 'Adjust Qty' ? 'bg-green-500 bg-opacity-20 disable cursor-not-allowed border-green-500 border text-green-500' : 'bg-red-500 bg-opacity-20 border-red-500 border text-red-500'} p-1 rounded-md `}>
+                                                                order?.status === 'Adjust Qty' ? 'Adjusted' : <button onClick={() => handleStatus(order?.dyeing_order, 'sample-adjust')} className={`${items?.status === 'Adjust Qty' ? 'bg-green-500 bg-opacity-20 disable cursor-not-allowed border-green-500 border text-green-500' : 'bg-red-500 bg-opacity-20 border-red-500 border text-red-500'} ${usersRole.role === 'admin' ? '':'hidden'} p-1 rounded-md `}>
                                                                     {items?.status === 'Adjust Qty' ? 'Adjusted' : 'Adjust'}
                                                                 </button>
                                                             }
@@ -193,7 +195,7 @@ const AllSamples = () => {
                                                         <p>Qty: {order.dyeing_order_qty}</p>
                                                         <p>
                                                             {
-                                                                order?.status === 'Adjust Qty' ? 'Adjusted' : <button onClick={() => handleStatus(order?.dyeing_order, 'sample-adjust')} className={`${order?.status === 'Adjust Qty' ? 'bg-green-500 bg-opacity-20 disable cursor-not-allowed border-green-500 border text-green-500' : 'bg-red-500 bg-opacity-20 items-center border-red-500 border text-red-500'} p-1 rounded-md `}>
+                                                                order?.status === 'Adjust Qty' ? 'Adjusted' : <button onClick={() => handleStatus(order?.dyeing_order, 'sample-adjust')} className={`${order?.status === 'Adjust Qty' ? 'bg-green-500 bg-opacity-20 disable cursor-not-allowed border-green-500 border text-green-500' : 'bg-red-500 bg-opacity-20 items-center border-red-500 border text-red-500'} ${usersRole.role === 'admin' ? '':'hidden'} p-1 rounded-md `}>
                                                                     {order?.status === 'Adjust Qty' ? 'Adjusted' : 'Adjust'}
                                                                 </button>
                                                             }

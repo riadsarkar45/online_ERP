@@ -10,6 +10,7 @@ import AddRawIssue from '../Dashboard/Pages/rawIssue/AddRawIssue.jsx';
 import AddNewSample from '../Dashboard/Pages/Sample/AddNewSample.jsx';
 import AllSamples from '../Dashboard/Pages/Sample/AllSamples.jsx';
 import SampleOrders from '../Dashboard/Pages/Sample/SampleOrders.jsx';
+import AdminRoute from '../Dashboard/Hooks/AdminRoute/AdminRoute.jsx';
 const Routes = createBrowserRouter([
     {
         path: "/",
@@ -25,7 +26,7 @@ const Routes = createBrowserRouter([
             },
             {
                 path: "/dashboard/add-new-dyeing-order",
-                element: <AddNewOrder />,
+                element: <AdminRoute><AddNewOrder /></AdminRoute>,
             },
             {
                 path: "/dashboard/dyeing-order-wise-report",
@@ -49,7 +50,7 @@ const Routes = createBrowserRouter([
             },
             {
                 path: "/dashboard/addnewsample",
-                element: <AddNewSample />,
+                element: <AdminRoute><AddNewSample /></AdminRoute>,
             },
             {
                 path: "/dashboard/samples",

@@ -3,6 +3,8 @@ const User_Services = require('../../controllers/user_services');
 const { default: analyzeColorDelivery } = require('../../functions/functions');
 const userSampleRouters = express.Router();
 const classUserServices = new User_Services();
+const verifyToken = require('../../services/auth');
+const getUserRole = require('../../services/auth');
 
 userSampleRouters.post('/new-sample', async (req, res) => {
     try {
@@ -87,7 +89,7 @@ userSampleRouters.post('/new-sample', async (req, res) => {
     }
 });
 
-userSampleRouters.get('/samples', async (req, res) => {
+userSampleRouters.get('/samples', verifyToken, getUserRole, async (req, res) => {
     try {
         const sampleOrders = await classUserServices.fetchData('sample_orders');
         const { month, marketing } = req.query;
@@ -177,7 +179,7 @@ userSampleRouters.get('/samples', async (req, res) => {
     }
 });
 
-userSampleRouters.post('/sample-status/:status/:dyeing_order', async (req, res) => {
+userSampleRouters.post('/sample-status/:status/:dyeing_order', verifyToken, getUserRole, async (req, res) => {
     const status = req.params.status;
     const dyeing_order = req.params.dyeing_order;
     console.log(status, dyeing_order, 'line 166');
@@ -198,7 +200,7 @@ userSampleRouters.post('/sample-status/:status/:dyeing_order', async (req, res) 
 
 
 
-userSampleRouters.post('/update-sample/:dyeing_order', async (req, res) => {
+userSampleRouters.post('/update-sample/:dyeing_order', verifyToken, getUserRole, async (req, res) => {
     const input = req.body;
     const dyeingOrder = req.params.dyeing_order;
 
@@ -262,7 +264,7 @@ userSampleRouters.post('/update-sample/:dyeing_order', async (req, res) => {
     });
 });
 
-userSampleRouters.get('/final-summary', async (req, res) => {
+userSampleRouters.get('/final-summary', verifyToken, getUserRole, async (req, res) => {
     try {
         const samples = await classUserServices.fetchData('sample_orders');
 

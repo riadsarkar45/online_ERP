@@ -1,10 +1,12 @@
 const express = require('express');
 const userRouters = express.Router();
 const User_Services = require('../controllers/user_services');
+const verifyToken = require('../services/auth');
+const getUserRole = require('../services/auth');
 const classUserServices = new User_Services();
 const currentM = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
 
-userRouters.get('/dyeing-orders', async (req, res) => {
+userRouters.get('/dyeing-orders', verifyToken, getUserRole, async (req, res) => {
     try {
         const result = await classUserServices.fetchData('dyeing_orders', {
             lookups: [
@@ -28,7 +30,7 @@ userRouters.get('/dyeing-orders', async (req, res) => {
     }
 });
 
-userRouters.post('/update-production', async (req, res) => {
+userRouters.post('/update-production', verifyToken, getUserRole, async (req, res) => {
     const checkData = req.body;
     console.log(checkData, 'line 33');
     if (!checkData || Object.keys(checkData).length === 0) {
@@ -120,7 +122,7 @@ userRouters.post('/update-production', async (req, res) => {
 
 
 
-userRouters.post('/add_new_dyeing_order', async (req, res) => {
+userRouters.post('/add_new_dyeing_order', verifyToken, getUserRole, async (req, res) => {
     if (Object.keys(req.body).length < 1 || !req.body) return res.status(400).send({ error: 'No data provided' });
     const exists = await classUserServices.findDataIfExist('dyeing_orders', {
         dyeing_order: req.body.dyeing_order
@@ -191,7 +193,7 @@ userRouters.post('/add_new_dyeing_order', async (req, res) => {
 
 })
 
-userRouters.get('/get_pi_info/:pi_no', async (req, res) => {
+userRouters.get('/get_pi_info/:pi_no', verifyToken, getUserRole, async (req, res) => {
     if (!req.params.pi_no || isNaN(Number(req.params.pi_no))) {
         return res.status(400).send({ error: 'Invalid PI number provided.' });
     }

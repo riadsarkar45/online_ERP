@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { AuthContext } from "./Firebase/AuthProvider";
 
 const DARK_MODE_QUERY = '(prefers-color-scheme: dark)';
 
@@ -12,6 +13,8 @@ const ThemeModeContext = createContext({
 export const useThemeMode = () => useContext(ThemeModeContext);
 
 const ThemeProvider = ({ children }) => {
+      const { user } = useContext(AuthContext);
+console.log(user);
   const getInitialTheme = () => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'light' || savedTheme === 'dark') {

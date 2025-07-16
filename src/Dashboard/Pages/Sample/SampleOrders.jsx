@@ -3,6 +3,7 @@ import useAxiosSecure from "../../Hooks/AxiosSecure";
 import { useState } from "react";
 import { useThemeMode } from "../../Hooks/Theme";
 import FinalSummary from "./FinalSummary";
+import UserRole from "../../Hooks/UserRole";
 
 const SampleOrders = () => {
     const [samples, setSamples] = useState([])
@@ -10,6 +11,7 @@ const SampleOrders = () => {
     const [colorObjects, setColorObjects] = useState([]);
     const [showDetail, setShowDetail] = useState(false);
     const [isShowDetail, setIsShowDetail] = useState(false);
+    const [usersRole] = UserRole();
     const { theme } = useThemeMode();
 
     const { refetch } = useQuery({
@@ -88,7 +90,7 @@ const SampleOrders = () => {
                                     Factory → {items?.factory_name}
                                 </h2>
                                 <span>
-                                    <button onClick={() => handleStatus(items?.dyeing_order, 'sample-adjust')} className={`${items?.status === 'Adjust Qty' ? 'bg-green-500 bg-opacity-20 disable cursor-not-allowed border-green-500 border text-green-500' : 'bg-red-500 bg-opacity-20 border-red-500 border text-red-500'} p-1 rounded-md `}>
+                                    <button onClick={() => handleStatus(items?.dyeing_order, 'sample-adjust')} className={`${items?.status === 'Adjust Qty' ? 'bg-green-500 bg-opacity-20 disable cursor-not-allowed border-green-500 border text-green-500' : 'bg-red-500 bg-opacity-20 border-red-500 border text-red-500'} ${usersRole.role === 'admin' ? '' : 'hidden'} p-1 rounded-md `}>
                                         {items?.status === 'Adjust Qty' ? 'Adjusted' : 'Adjust'}
                                     </button>
                                 </span>
@@ -119,7 +121,7 @@ const SampleOrders = () => {
                                         {items?.delivered}
                                         {items?.received_cols?.length < items?.color_name?.length && (
                                             <span className="ml-2">
-                                              {items?.color_name?.length} / ({items?.color_name?.length - items?.received_cols?.length} Colors not delivered)
+                                                {items?.color_name?.length} / ({items?.color_name?.length - items?.received_cols?.length} Colors not delivered)
                                             </span>
                                         )}
                                     </span>
@@ -138,18 +140,20 @@ const SampleOrders = () => {
                             </div>
 
                             <div className="text-black flex mb-4">
-                                <input
-                                    type="text"
-                                    placeholder="Received Color Names"
-                                    className="outline-none p-1 bg-opacity-25"
-                                    onChange={(e) => handleChange(e.target.value)}
-                                />
-                                <button onClick={() => handleUpdateSample(items?.dyeing_order)} className="outline-none bg-gray-300 bg-opacity-25 p-1 border border-r-0">Save Changes</button>
+                                <div className={`${usersRole.role === 'admin' ? '':'hidden'}`}>
+                                    <input
+                                        type="text"
+                                        placeholder="Received Color Names"
+                                        className="outline-none p-1 bg-opacity-25"
+                                        onChange={(e) => handleChange(e.target.value)}
+                                    />
+                                    <button onClick={() => handleUpdateSample(items?.dyeing_order)} className="outline-none bg-gray-300 bg-opacity-25 p-1 border border-r-0">Save Changes</button>
+                                </div>
                                 <button onClick={() => handleShowDetail(items?.dyeing_order)} className="outline-none bg-gray-300 bg-opacity-25 rounded-r-md p-1 border">See Detail</button>
                             </div>
 
                             {
-                                 isShowDetail || showDetail === items?.dyeing_order  && (
+                                isShowDetail || showDetail === items?.dyeing_order && (
                                     items?.received_cols?.length === 0 ? (
                                         <h2>No status to show</h2>
                                     ) : (
