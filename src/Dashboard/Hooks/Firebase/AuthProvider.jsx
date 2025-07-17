@@ -19,15 +19,13 @@ const AuthProvider = ({ children }) => {
 
     const signIn = async (email, password) => {
         setLoading(true);
-        console.log('Before sign-in:', email, password);
         return signInWithEmailAndPassword(auth, email, password)
             .then(result => {
-                console.log('Sign-in successful:', result.user);
-                return result; // This may not be necessary depending on your use case
+                return result;
             })
             .catch(error => {
                 console.error('Sign-in error:', error);
-                throw error; // Rethrow the error to propagate it to the calling code
+                throw error;
             })
             .finally(() => {
                 setLoading(false);
@@ -48,24 +46,32 @@ const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            if (currentUser) {
+            if (currentUser && currentUser.email) {
                 const userInfo = { email: currentUser.email };
                 AxiosPublic.post('/jwt', userInfo)
                     .then(res => {
                         if (res.data.token) {
+                            console.log('Token received:', res.data.token);
                             localStorage.setItem('access-token', res.data.token);
                         }
+                        setLoading(false);
+                    })
+                    .catch(err => {
+                        console.error('JWT token request failed:', err);
                         setLoading(false);
                     });
             } else {
                 localStorage.removeItem('access-token');
+                setUser(null);
                 setLoading(false);
             }
+
             setUser(currentUser);
         });
 
         return () => unsubscribe();
     }, [AxiosPublic]);
+
 
     const authInfo = { user, googleSignIn, logOut, signIn, loading, updateUserInfo, createUser }
     return (

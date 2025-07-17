@@ -15,13 +15,11 @@ createRoot(document.getElementById('root')).render(
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
         <Theme>
-          <SocketProvider>
             <CursorDetector>
               <RouterProvider router={Routes}>
                 <App />
               </RouterProvider>
             </CursorDetector>
-          </SocketProvider>
 
         </Theme>
       </QueryClientProvider>

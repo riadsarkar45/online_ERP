@@ -3,8 +3,7 @@ const User_Services = require('../../controllers/user_services');
 const { default: analyzeColorDelivery } = require('../../functions/functions');
 const userSampleRouters = express.Router();
 const classUserServices = new User_Services();
-const verifyToken = require('../../services/auth');
-const getUserRole = require('../../services/auth');
+const { verifyToken, getUserRole } = require('../../services/auth');
 
 userSampleRouters.post('/new-sample', async (req, res) => {
     try {

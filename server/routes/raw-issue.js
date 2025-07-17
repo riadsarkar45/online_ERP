@@ -2,8 +2,7 @@ const express = require('express');
 const issueRoutes = express.Router();
 const User_Services = require('../controllers/user_services');
 const classUserServices = new User_Services();
-const verifyToken = require('../services/auth');
-const getUserRole = require('../services/auth');
+const { verifyToken, getUserRole } = require('../services/auth');
 
 issueRoutes.get('/raw-issue', verifyToken, getUserRole, async (req, res) => {
     try {

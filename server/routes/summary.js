@@ -2,10 +2,9 @@ const express = require('express');
 const summaryRouters = express.Router();
 const User_Services = require('../controllers/user_services');
 const classUserServices = new User_Services();
-const verifyToken = require('../services/auth');
-const getUserRole = require('../services/auth');
+const { verifyToken, getUserRole } = require('../services/auth');
 
-summaryRouters.get('/summary',verifyToken, getUserRole, async (req, res) => {
+summaryRouters.get('/summary', verifyToken, getUserRole, async (req, res) => {
   try {
 
     const summary = await classUserServices.fetchData('summary')

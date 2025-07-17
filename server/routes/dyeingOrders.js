@@ -1,8 +1,7 @@
 const express = require('express');
 const userRouters = express.Router();
 const User_Services = require('../controllers/user_services');
-const verifyToken = require('../services/auth');
-const getUserRole = require('../services/auth');
+const { verifyToken, getUserRole } = require('../services/auth');
 const classUserServices = new User_Services();
 const currentM = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`;
 

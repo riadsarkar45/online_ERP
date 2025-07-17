@@ -7,7 +7,7 @@ import UserRole from "./Hooks/UserRole";
 const Dashboard = () => {
     const { theme, toggleTheme, resetTheme, hideSidebarAndHeader } = useThemeMode();
     const [usersRole] = UserRole();
-    console.log(usersRole);
+    // console.log(usersRole);
     const popupRef = useRef();
     const [popUp, setPopUp] = useState(false);
     const changeTheme = () => {

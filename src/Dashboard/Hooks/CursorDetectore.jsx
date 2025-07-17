@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useRef, useEffect } from "react";
 import Alert from "../../Components/Alert";
-import { useSocket } from "./Socket";
 
 const CursorInactivityContext = createContext();
 export const useCursorInactivity = () => useContext(CursorInactivityContext);
