@@ -11,6 +11,7 @@ import AddNewSample from '../Dashboard/Pages/Sample/AddNewSample.jsx';
 import AllSamples from '../Dashboard/Pages/Sample/AllSamples.jsx';
 import SampleOrders from '../Dashboard/Pages/Sample/SampleOrders.jsx';
 import AdminRoute from '../Dashboard/Hooks/AdminRoute/AdminRoute.jsx';
+import PrivateRoute from '../Dashboard/Hooks/PrivateRoute.jsx';
 const Routes = createBrowserRouter([
     {
         path: "/",
@@ -26,39 +27,39 @@ const Routes = createBrowserRouter([
             },
             {
                 path: "/dashboard/add-new-dyeing-order",
-                element: <AdminRoute><AddNewOrder /></AdminRoute>,
+                element: <PrivateRoute> <AdminRoute><AddNewOrder /></AdminRoute></PrivateRoute>,
             },
             {
                 path: "/dashboard/dyeing-order-wise-report",
-                element: <Orders />,
+                element: <PrivateRoute><Orders /></PrivateRoute>,
             },
             {
                 path: "/dashboard/update-production-qty",
-                element: <Production />,
+                element: <PrivateRoute><Production /></PrivateRoute>,
             },
             {
                 path: "/dashboard/summary",
-                element: <Summary />,
+                element: <PrivateRoute><Summary /></PrivateRoute>,
             },
             {
                 path: "/dashboard/pi-summary",
-                element: <PiSummary />,
+                element: <PrivateRoute><PiSummary /></PrivateRoute>,
             },
             {
                 path: "/dashboard/raw-issue",
-                element: <AddRawIssue />,
+                element: <PrivateRoute><AddRawIssue /></PrivateRoute>,
             },
             {
                 path: "/dashboard/addnewsample",
-                element: <AdminRoute><AddNewSample /></AdminRoute>,
+                element: <PrivateRoute><AdminRoute><AddNewSample /></AdminRoute></PrivateRoute>,
             },
             {
                 path: "/dashboard/samples",
-                element: <AllSamples />,
+                element: <PrivateRoute><AllSamples /></PrivateRoute>,
             },
             {
                 path: "/dashboard/all-samples",
-                element: <SampleOrders />,
+                element: <PrivateRoute><SampleOrders /></PrivateRoute>,
             },
         ]
     },

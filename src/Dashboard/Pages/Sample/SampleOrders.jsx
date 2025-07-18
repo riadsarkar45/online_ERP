@@ -90,7 +90,7 @@ const SampleOrders = () => {
                                     Factory → {items?.factory_name}
                                 </h2>
                                 <span>
-                                    <button onClick={() => handleStatus(items?.dyeing_order, 'sample-adjust')} className={`${items?.status === 'Adjust Qty' ? 'bg-green-500 bg-opacity-20 disable cursor-not-allowed border-green-500 border text-green-500' : 'bg-red-500 bg-opacity-20 border-red-500 border text-red-500'} ${usersRole.role === 'admin' ? '' : 'hidden'} p-1 rounded-md `}>
+                                    <button onClick={() => handleStatus(items?.dyeing_order, 'sample-adjust')} className={`${items?.status === 'Adjust Qty' ? 'bg-green-500 bg-opacity-20 disable cursor-not-allowed border-green-500 border text-green-500' : 'bg-red-500 bg-opacity-20 border-red-500 border text-red-500'} ${usersRole?.role === 'admin' ? '' : 'hidden'} p-1 rounded-md `}>
                                         {items?.status === 'Adjust Qty' ? 'Adjusted' : 'Adjust'}
                                     </button>
                                 </span>
@@ -140,7 +140,7 @@ const SampleOrders = () => {
                             </div>
 
                             <div className="text-black flex mb-4">
-                                <div className={`${usersRole.role === 'admin' ? '':'hidden'}`}>
+                                <div className={`${usersRole?.role === 'admin' ? '':'hidden'}`}>
                                     <input
                                         type="text"
                                         placeholder="Received Color Names"

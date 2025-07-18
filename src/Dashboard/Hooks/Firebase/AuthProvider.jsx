@@ -5,7 +5,7 @@ import axiosPublic from "../AxiosPublic";
 export const AuthContext = createContext(null);
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const [isLoading, setLoading] = useState(true)
     const AxiosPublic = axiosPublic;
     const provider = new GoogleAuthProvider()
     const googleSignIn = () => {
@@ -73,7 +73,7 @@ const AuthProvider = ({ children }) => {
     }, [AxiosPublic]);
 
 
-    const authInfo = { user, googleSignIn, logOut, signIn, loading, updateUserInfo, createUser }
+    const authInfo = { user, googleSignIn, logOut, signIn, isLoading, updateUserInfo, createUser }
     return (
         <AuthContext.Provider value={authInfo}>
             {children}
