@@ -18,8 +18,8 @@ const SampleOrders = () => {
         queryKey: ["posts"],
         queryFn: async () => {
             try {
-                const res = await AxiosSecure.get('/samples');
-                setSamples(res.data?.sampleOrders)
+                const res = await AxiosSecure.get('/samples/serialized');
+                setSamples(res.data)
                 return res.data;
             } catch (error) {
                 console.error("Error fetching posts:", error);

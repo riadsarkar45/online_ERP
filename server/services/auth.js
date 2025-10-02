@@ -2,18 +2,16 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const User_Services = require('../controllers/user_services');
 const classUserServices = new User_Services();
-const ACCESS_TOKEN = 'dd392eba2883b918867abbd4cf0dfdb79522bccae3e337e6f7796848e6e50f34702cb7dbdc2a81b8f89d8ed5628aa411e365df8d1acb481a57c4db8ef444cdbc'
+
 const verifyToken = (req, res, next) => {
-    console.log('Authorization Header:', req.headers.authorization);
 
     if (!req.headers.authorization) {
         return res.status(401).send({ message: 'unauthorized access' });
     }
 
     const token = req.headers.authorization.split(' ')[1];
-    console.log('Extracted Token:', token);
 
-    jwt.verify(token, ACCESS_TOKEN, (err, decoded) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN, (err, decoded) => {
         if (err) {
             console.error('JWT Verification Error:', err.message);
             return res.status(401).send({ message: 'unauthorized access' });

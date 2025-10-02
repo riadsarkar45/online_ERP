@@ -88,6 +88,62 @@ userSampleRouters.post('/new-sample', async (req, res) => {
     }
 });
 
+userSampleRouters.get('/samples/serialized', verifyToken, getUserRole, async (req, res) => {
+  try {
+    const sampleOrders = await classUserServices.fetchData('sample_orders');
+
+    if (!Array.isArray(sampleOrders) || sampleOrders.length === 0) {
+      return res.send({ message: 'No sample orders found', type: 'error' });
+    }
+
+    const parseDyeingOrder = (dyeingOrder) => {
+      const match = dyeingOrder.match(/^([A-Z]+)-(\d+)-(\d{2,4})$/);
+      if (!match) return null;
+      return {
+        prefix: match[1],
+        number: parseInt(match[2], 10),
+        year: match[3],
+      };
+    };
+
+    const prefixOrder = ['SDDCS', 'SDDHS', 'SDDPDS'];
+
+    // Add parsed fields for sorting
+    const enrichedOrders = sampleOrders.map(order => {
+      const parsed = parseDyeingOrder(order.dyeing_order);
+      return {
+        ...order,
+        prefix: parsed ? parsed.prefix : '',
+        orderNumber: parsed ? parsed.number : Infinity,
+      };
+    });
+
+    // Sort by prefix priority and then by order number
+    enrichedOrders.sort((a, b) => {
+      const prefixIndexA = prefixOrder.indexOf(a.prefix);
+      const prefixIndexB = prefixOrder.indexOf(b.prefix);
+
+      if (prefixIndexA !== prefixIndexB) {
+        if (prefixIndexA === -1) return 1;
+        if (prefixIndexB === -1) return -1;
+        return prefixIndexA - prefixIndexB;
+      }
+
+      return a.orderNumber - b.orderNumber;
+    });
+
+    // Remove helper fields before sending
+    const result = enrichedOrders.map(({ ...rest }) => rest);
+
+    res.json(result);
+
+  } catch (error) {
+    console.error('Error fetching serialized samples:', error);
+    res.status(500).send({ message: 'Internal server error', error: error.message });
+  }
+});
+
+
 userSampleRouters.get('/samples', verifyToken, getUserRole, async (req, res) => {
     try {
         const sampleOrders = await classUserServices.fetchData('sample_orders');

@@ -3,6 +3,7 @@ import { Link, Outlet } from "react-router";
 import { useThemeMode } from "./Hooks/Theme";
 import { Toaster } from "react-hot-toast";
 import UserRole from "./Hooks/UserRole";
+import axiosPublic from "./Hooks/AxiosPublic";
 
 const Dashboard = () => {
     const { theme, toggleTheme, resetTheme, hideSidebarAndHeader } = useThemeMode();
@@ -14,6 +15,17 @@ const Dashboard = () => {
         setPopUp(!popUp);
         console.log(popUp);
     }
+
+    const callFastifyApi = () => {
+        axiosPublic.post('http://localhost:3000/api/v1/refresh-token', {}, {
+            withCredentials: true // 👈 This tells Axios to send cookies like refreshToken
+        }).then(response => {
+            console.log('Response:', response.data);
+        }).catch(err => {
+            console.error('Error:', err.response?.data || err.message);
+        });
+    };
+
 
     return (
         <div className={`${theme === 'dark' ? 'bg-gray-900 text-gray-100' : 'bg-white text-black'} h-screen overflow-hidden`}>
@@ -233,6 +245,8 @@ const Dashboard = () => {
                 <main className="mt-16 overflow-y-auto p-6 h-full">
                     <Outlet />
                     <Toaster />
+
+                    <button onClick={callFastifyApi}> Call fastify api </button>
                 </main>
             </div>
         </div>
